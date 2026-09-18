@@ -18,6 +18,7 @@ def align_images(master_img, daily_img, max_feature = 5000, match_ratio=0.75, ra
     # match the feature brute force with Hamming distance
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
     matches = bf.knnMatch(descriptors_daily, descriptors_master, k=2)
+    print(matches[0])
 
     good_matches = []
     for m, n in matches:
