@@ -23,7 +23,7 @@ def process_uploaded_images():
                 continue
                 
             img_path = os.path.join(root, f)
-            room_name = resolve_room_name(img_path, CURRENT_DIR)
+            room_name = 'Media'
 
             if not room_name:
                 print(f"[SKIP] Could not identify room space for '{img_path}'.")
