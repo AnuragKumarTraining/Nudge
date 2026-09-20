@@ -1,0 +1,24 @@
+{
+  "capture_id": "cap_690205",
+  "master_reference_id": "table_14_setup_v2",
+  "quality_gate": {
+    "blur_variance": 1724.7,
+    "is_passed": true
+  },
+  "spatial_alignment": {
+    "pitch_delta_deg": -34.8,
+    "roll_delta_deg": -83.8,
+    "yaw_delta_deg": 146.7,
+    "estimated_distance_m": 1.85
+  },
+  "camera_specs": {
+    "lens_type": "1x_main",
+    "focal_length_mm": 24.0,
+    "luminance_avg": 120.0
+  },
+  "environment": {
+    "timestamp": "2026-09-18T09:28:27.952Z",
+    "ambient_lux": 294.0
+  },
+  "saved_at": "2026-09-18T09:28:29.056176+00:00"
+}
