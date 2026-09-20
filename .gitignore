@@ -1,5 +1,5 @@
-__pycache__/
-*.pt
-.venv
-baselines/
+.venv/
+yolov8n.pt
+utils\__pycache__
+__pycache__
 .env
