@@ -4,6 +4,9 @@ every module reads thresholds/class-lists from, so tuning the pipeline
 never means hunting through function bodies.
 """
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # reads .env from the project root
 
 # ---- YOLO ----
 
@@ -291,6 +294,16 @@ MATERIAL_HINT_BY_CLASS = {
 }
 
 
+CLASS_SYNONYMS = {
+    "dining table": "table",
+    "coffee cup": "cup",
+    "wine glass": "glass",
+    "flower vase": "vase",
+    "ceiling fan": "fan",
+    "light bulb": "light",
+    "trash bin": "dustbin",
+}
+
 # ---- Quality gate ----
 BLUR_VARIANCE_THRESHOLD = float(os.getenv("BLUR_VARIANCE_THRESHOLD", "100.0"))
 
@@ -321,15 +334,8 @@ QWEN_VL_MODEL = os.getenv("QWEN_VL_MODEL", "qwen3-vl-plus")
 
 
 # config/settings.py
-
-VLM_API_KEY_ENV = os.getenv("VLM_API_KEY_ENV", "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")
-
-VLM_BASE_URL = os.getenv(
-    "VLM_BASE_URL",
-    "https://integrate.api.nvidia.com/v1"
-)
-
-VLM_MODEL = os.getenv(
-    "VLM_MODEL",
-    "nvidia/nemotron-nano-vl-v2"
-)
+VLM_API_KEY_ENV = "NVIDIA_API_KEY"   # just the NAME of the variable
+VLM_BASE_URL = os.getenv("VLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
+# Must match a published NVIDIA NIM model id. A typo here returns HTTP 404
+# "page not found" from integrate.api.nvidia.com, not a model-not-found JSON.
+VLM_MODEL = os.getenv("VLM_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning")
