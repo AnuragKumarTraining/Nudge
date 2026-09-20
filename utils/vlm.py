@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Room state visual inspection module using Google GenAI SDK.
 
 This module provides structured schema validation and comparative multimodal analysis
@@ -12,6 +14,13 @@ from typing import Any, Literal
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    def load_dotenv():
+        pass
 
 
 # --- Type Aliases ---
@@ -71,14 +80,16 @@ class VLMResult(BaseModel):
 
 
 # --- Global Client & Configuration ---
-MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
-"""Default Gemini model identifier used for multimodal inference."""
+def get_model() -> str:
+    return os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-API_KEY: str | None = os.getenv("GEMINI_API_KEY")
-"""Active Gemini API token retrieved from system environment."""
+def get_client() -> genai.Client:
+    load_dotenv()
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set GEMINI_API_KEY in your environment or .env file.")
+    return genai.Client(api_key=api_key)
 
-client: genai.Client = genai.Client(api_key=API_KEY)
-"""Initialized instance of the Google GenAI SDK client."""
 
 
 # --- Helper Functions ---
@@ -204,8 +215,11 @@ placement, missing items, unauthorized clutter, or lighting deviations.
 Return only the structured output adhering to the defined schema.
 """
 
+    client = get_client()
+    model = get_model()
+
     response = client.models.generate_content(
-        model=MODEL,
+        model=model,
         contents=[
             instruction,
             "MASTER IMAGE (BASELINE):",
