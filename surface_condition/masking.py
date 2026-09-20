@@ -1,32 +1,35 @@
 import numpy as np
 
-from config.settings import SURFACE_ANCHOR_CLASSES
+from config.settings import EXPOSED_SURFACE_CLASSES, STRUCTURAL_CLASSES
+
+
+def _clamp_box(image: np.ndarray, box: dict) -> tuple[int, int, int, int]:
+    h, w = image.shape[:2]
+    return (max(0, box["x1"]), max(0, box["y1"]), min(w, box["x2"]), min(h, box["y2"]))
 
 
 def get_objects_on_surface(anchor_obj: dict, all_objects: list[dict]) -> list[dict]:
-    """Objects whose centroid falls inside the anchor's (e.g. table's) bbox.
-    Simplification: centroid-containment, not polygon-containment — fine for
-    v1, revisit once real photos show edge cases (an object mostly off the
-    table edge but with its centroid just inside it, etc.)."""
-    tx1, ty1, tx2, ty2 = anchor_obj["bbox"]["x1"], anchor_obj["bbox"]["y1"], anchor_obj["bbox"]["x2"], anchor_obj["bbox"]["y2"]
+    """Objects whose centroid falls inside the surface's bbox (table, floor, wall...).
+    Structural regions (floor/wall/window/...) are never "on top of" anything."""
+    b = anchor_obj["bbox"]
     on_surface = []
     for obj in all_objects:
-        if obj["object_id"] == anchor_obj["object_id"]:
+        if obj["object_id"] == anchor_obj["object_id"] or obj["class"] in STRUCTURAL_CLASSES:
             continue
         cx, cy = obj["centroid"]["x"], obj["centroid"]["y"]
-        if tx1 <= cx <= tx2 and ty1 <= cy <= ty2:
+        if b["x1"] <= cx <= b["x2"] and b["y1"] <= cy <= b["y2"]:
             on_surface.append(obj)
     return on_surface
 
 
 def get_exposed_surface_crop(image: np.ndarray, anchor_obj: dict, objects_on_surface: list[dict]):
-    """Crop the anchor's bbox, mask out (zero) the regions of objects sitting on it."""
-    x1, y1, x2, y2 = anchor_obj["bbox"]["x1"], anchor_obj["bbox"]["y1"], anchor_obj["bbox"]["x2"], anchor_obj["bbox"]["y2"]
+    """Crop the surface's bbox; mask value 0 = covered by another object, 255 = exposed."""
+    x1, y1, x2, y2 = _clamp_box(image, anchor_obj["bbox"])
     crop = image[y1:y2, x1:x2].copy()
     if crop.size == 0:
         return crop, None, (x1, y1)
 
-    mask = np.ones(crop.shape[:2], dtype=np.uint8) * 255
+    mask = np.full(crop.shape[:2], 255, dtype=np.uint8)
     for obj in objects_on_surface:
         ox1 = max(0, obj["bbox"]["x1"] - x1)
         oy1 = max(0, obj["bbox"]["y1"] - y1)
@@ -38,9 +41,10 @@ def get_exposed_surface_crop(image: np.ndarray, anchor_obj: dict, objects_on_sur
 
 
 def get_object_crop(image: np.ndarray, obj: dict):
-    x1, y1, x2, y2 = obj["bbox"]["x1"], obj["bbox"]["y1"], obj["bbox"]["x2"], obj["bbox"]["y2"]
+    x1, y1, x2, y2 = _clamp_box(image, obj["bbox"])
     return image[y1:y2, x1:x2], (x1, y1)
 
 
 def is_surface_anchor(obj: dict) -> bool:
-    return obj["class"] in SURFACE_ANCHOR_CLASSES
+    """True for surfaces that other objects sit on/in front of (table, floor, wall, ceiling)."""
+    return obj["class"] in EXPOSED_SURFACE_CLASSES

@@ -42,8 +42,13 @@ class DetectedObject(TypedDict, total=False):
     mask_polygon: MaskPolygon
     surface_relevant: bool
     material_hint: str
-    condition: str
-    relationships: dict
+    condition: str          # good | worn | damaged | broken | missing_parts | unclear | not_assessed | pending_vlm
+    cleanliness: str        # clean | slightly_dirty | dirty | unclear | not_assessed | pending_vlm
+    issues: list[str]       # short VLM phrases, e.g. "chipped rim"
+    relationships: dict     # relation (on|near), belongs_to, relative_position, objects_on_surface
+    source: str             # best-geometry source: yolo | yolo_world | vlm_inventory
+    sources: list[str]      # every branch that saw this object (after dedup)
+    reported_count: int     # VLM-only: how many instances the single loose box stands for
 
 
 class StainCandidate(TypedDict, total=False):
@@ -54,6 +59,7 @@ class StainCandidate(TypedDict, total=False):
     raw_confidence: float
     adjusted_confidence: float
     vlm_verdict: Optional[str]
+    is_confirmed_stain: bool  # True if VLM confirmed the stain, False otherwise
 
 
 class SurfaceAnalysisEntry(TypedDict, total=False):
@@ -64,12 +70,13 @@ class SurfaceAnalysisEntry(TypedDict, total=False):
 
 class Stage3Output(TypedDict, total=False):
     capture_id: str
-    master_reference_id: Optional[str]
-    quality_gate: dict
-    alignment_result: dict
+    status: str                 # "processed" | "rejected"
+    preprocessing: dict         # quality_gate + lighting (no alignment - there is no master image)
+    extractor_used: str
+    sources: dict               # raw hits per discovery branch before dedup
+    total_objects: int
+    object_counts: dict         # over the MERGED inventory
     objects: list[DetectedObject]
-    object_counts: dict
     surface_analysis: list[SurfaceAnalysisEntry]
     layout_description: str
-    extractor_used: str
-    detection_confidence: float
+    artifacts: dict            # paths to all artifacts written by this stage

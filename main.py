@@ -1,44 +1,60 @@
-import json
+"""
+CLI:  python main.py --image images/daily_2.jpg --metadata metadata/daily_image.json
+    python main.py                                            # defaults below
+    python main.py --stage discovery                          # Stage A only -> object_discovery.json
+    python main.py --stage condition \
+        --discovery-json outputs/cap_690205_object_discovery.json   # Stage B only, from the artifact
+"""
 import os
+import json
+import argparse
+from config.settings import OUTPUT_DIR
+from pipeline.run_stage3 import run_stage3_pipeline, run_condition_from_artifact
 
-from pipeline.run_stage3 import run_stage3_pipeline
+
+def _load_metadata(path: str) -> dict:
+    if os.path.exists(path):
+        with open(path) as f:
+            meta = json.load(f)
+        print(f"[INFO] Loaded metadata for capture_id={meta.get('capture_id', 'Unknown')}")
+        return meta
+    print(f"[WARNING] Metadata file not found at {path}. Proceeding with empty metadata.")
+    return {}
 
 def main():
-    # Hardcoded to only process the daily_2 image
-    image_path = os.path.join("images", "daily_2.jpg")
-    
-    # Adjusted metadata paths to logically match the daily_2 image
-    metadata_path = os.path.join("metadata", "daily_image.json") 
-    output_path = os.path.join("metadata", "daily_2_stage_3.json")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--image", default=os.path.join("images", "daily_2.jpg"))
+    ap.add_argument("--metadata", default=os.path.join("metadata", "daily_image.json"))
+    ap.add_argument("--out-dir", default=OUTPUT_DIR)
+    ap.add_argument("--stage", choices=["all", "discovery", "condition"], default="all")
+    ap.add_argument("--discovery-json", help="required for --stage condition")
+    args = ap.parse_args()
 
-    # Safety check: ensure the image actually exists
-    if not os.path.exists(image_path):
-        print(f"[ERROR] Image not found at {image_path}. Halting execution.")
+    metadata = _load_metadata(args.metadata)
+
+    if args.stage == "condition":
+        if not args.discovery_json:
+            ap.error("--stage condition needs --discovery-json <path to *_object_discovery.json>")
+        result = run_condition_from_artifact(args.discovery_json, metadata, args.image, args.out_dir)
+    elif args.stage == "discovery":
+        from pipeline.discovery import run_object_discovery
+        from pipeline.run_stage3 import _read_image
+
+        result = run_object_discovery(_read_image(args.image), metadata, image_path=args.image,
+                                      out_dir=args.out_dir)
+        print(f"[SUCCESS] discovery artifact: {result['artifact_path']}")
+        print(f"[INFO] sources={result['sources']} total_objects={result['total_objects']} "
+              f"counts={result['object_counts']}")
         return
-
-    # Load metadata safely
-    capture_metadata = {}
-    if os.path.exists(metadata_path):
-        with open(metadata_path, "r") as f:
-            capture_metadata = json.load(f)
-        print(f"[INFO] Loaded metadata for capture_id={capture_metadata.get('capture_id', 'Unknown')}")
     else:
-        print(f"[WARNING] Metadata file not found at {metadata_path}. Proceeding with empty metadata.")
+        result = run_stage3_pipeline(args.image, metadata, args.out_dir)
+    if result.get("status") == "rejected":
+        print(f"[REJECTED] capture not processed: reason={result.get('reason')} {result.get('quality_gate')}")
+        return
+    print(f"[SUCCESS] {result['artifacts']}")
+    print(f"[INFO] status={result['status']} objects={result['total_objects']} "
+          f"extractor={result['extractor_used']}")
 
-    master_image_path = os.path.join("images", "master.jpg")
-    master_image_path = master_image_path if os.path.exists(master_image_path) else None
-
-    # Execute the pipeline
-    result = run_stage3_pipeline(image_path, capture_metadata, master_image_path)
-
-    # Save the output
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, "w") as f:
-        json.dump(result, f, indent=2, default=str)
-
-    print(f"[SUCCESS] Stage 3 output saved to {output_path}")
-    print(f"[INFO] status={result.get('status')} objects_found={len(result.get('objects', []))} "
-          f"extractor={result.get('extractor_used')}")
 
 if __name__ == "__main__":
     main()

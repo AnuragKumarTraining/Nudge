@@ -1,0 +1,3381 @@
+{
+  "capture_id": "cap_690205",
+  "master_reference_id": "table_14_setup_v2",
+  "status": "object_discovery_complete",
+  "image": {
+    "path": "images\\daily_2.jpg",
+    "width": 1280,
+    "height": 720
+  },
+  "preprocessing": {},
+  "vlm_configured": true,
+  "sources": {
+    "yolo": 13,
+    "yolo_world": 30,
+    "vlm_inventory": 0
+  },
+  "total_objects": 33,
+  "object_counts": {
+    "air conditioner": 3,
+    "ceiling": 2,
+    "chair": 5,
+    "fire extinguisher": 1,
+    "floor": 2,
+    "light": 3,
+    "person": 3,
+    "plant": 6,
+    "television": 7,
+    "vase": 1
+  },
+  "objects": [
+    {
+      "object_id": "obj_001_chair",
+      "class": "chair",
+      "confidence": 0.747,
+      "bbox": {
+        "x1": 0,
+        "y1": 341,
+        "x2": 136,
+        "y2": 676
+      },
+      "bbox_normalized": {
+        "x1": 0.0,
+        "y1": 0.4736,
+        "x2": 0.1062,
+        "y2": 0.9389
+      },
+      "centroid": {
+        "x": 68,
+        "y": 508
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            135,
+            463
+          ],
+          [
+            67,
+            484
+          ],
+          [
+            122,
+            472
+          ],
+          [
+            133,
+            494
+          ],
+          [
+            54,
+            567
+          ],
+          [
+            132,
+            607
+          ],
+          [
+            28,
+            574
+          ],
+          [
+            62,
+            675
+          ],
+          [
+            135,
+            675
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.1055,
+            0.6431
+          ],
+          [
+            0.0523,
+            0.6722
+          ],
+          [
+            0.0953,
+            0.6556
+          ],
+          [
+            0.1039,
+            0.6861
+          ],
+          [
+            0.0422,
+            0.7875
+          ],
+          [
+            0.1031,
+            0.8431
+          ],
+          [
+            0.0219,
+            0.7972
+          ],
+          [
+            0.0484,
+            0.9375
+          ],
+          [
+            0.1055,
+            0.9375
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_002_person",
+      "class": "person",
+      "confidence": 0.739,
+      "bbox": {
+        "x1": 1168,
+        "y1": 318,
+        "x2": 1219,
+        "y2": 388
+      },
+      "bbox_normalized": {
+        "x1": 0.9125,
+        "y1": 0.4417,
+        "x2": 0.9523,
+        "y2": 0.5389
+      },
+      "centroid": {
+        "x": 1193,
+        "y": 353
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo",
+      "sources": [
+        "yolo"
+      ],
+      "orientation_deg": -1.59,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1196,
+            318
+          ],
+          [
+            1207,
+            329
+          ],
+          [
+            1197,
+            354
+          ],
+          [
+            1214,
+            374
+          ],
+          [
+            1218,
+            341
+          ],
+          [
+            1217,
+            361
+          ],
+          [
+            1207,
+            356
+          ],
+          [
+            1215,
+            318
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9344,
+            0.4417
+          ],
+          [
+            0.943,
+            0.4569
+          ],
+          [
+            0.9352,
+            0.4917
+          ],
+          [
+            0.9484,
+            0.5194
+          ],
+          [
+            0.9516,
+            0.4736
+          ],
+          [
+            0.9508,
+            0.5014
+          ],
+          [
+            0.943,
+            0.4944
+          ],
+          [
+            0.9492,
+            0.4417
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_003_chair",
+      "class": "chair",
+      "confidence": 0.726,
+      "bbox": {
+        "x1": 211,
+        "y1": 305,
+        "x2": 348,
+        "y2": 486
+      },
+      "bbox_normalized": {
+        "x1": 0.1648,
+        "y1": 0.4236,
+        "x2": 0.2719,
+        "y2": 0.675
+      },
+      "centroid": {
+        "x": 279,
+        "y": 395
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            211,
+            305
+          ],
+          [
+            211,
+            485
+          ],
+          [
+            347,
+            485
+          ],
+          [
+            287,
+            439
+          ],
+          [
+            227,
+            475
+          ],
+          [
+            280,
+            429
+          ],
+          [
+            241,
+            417
+          ],
+          [
+            243,
+            310
+          ],
+          [
+            330,
+            311
+          ],
+          [
+            318,
+            388
+          ],
+          [
+            347,
+            397
+          ],
+          [
+            347,
+            305
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.1648,
+            0.4236
+          ],
+          [
+            0.1648,
+            0.6736
+          ],
+          [
+            0.2711,
+            0.6736
+          ],
+          [
+            0.2242,
+            0.6097
+          ],
+          [
+            0.1773,
+            0.6597
+          ],
+          [
+            0.2188,
+            0.5958
+          ],
+          [
+            0.1883,
+            0.5792
+          ],
+          [
+            0.1898,
+            0.4306
+          ],
+          [
+            0.2578,
+            0.4319
+          ],
+          [
+            0.2484,
+            0.5389
+          ],
+          [
+            0.2711,
+            0.5514
+          ],
+          [
+            0.2711,
+            0.4236
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_004_potted_plant",
+      "class": "potted plant",
+      "confidence": 0.635,
+      "bbox": {
+        "x1": 583,
+        "y1": 229,
+        "x2": 633,
+        "y2": 313
+      },
+      "bbox_normalized": {
+        "x1": 0.4555,
+        "y1": 0.3181,
+        "x2": 0.4945,
+        "y2": 0.4347
+      },
+      "centroid": {
+        "x": 608,
+        "y": 271
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            593,
+            294
+          ],
+          [
+            596,
+            312
+          ],
+          [
+            608,
+            312
+          ],
+          [
+            614,
+            309
+          ],
+          [
+            617,
+            294
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.4633,
+            0.4083
+          ],
+          [
+            0.4656,
+            0.4333
+          ],
+          [
+            0.475,
+            0.4333
+          ],
+          [
+            0.4797,
+            0.4292
+          ],
+          [
+            0.482,
+            0.4083
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_005_potted_plant",
+      "class": "potted plant",
+      "confidence": 0.623,
+      "bbox": {
+        "x1": 974,
+        "y1": 313,
+        "x2": 1092,
+        "y2": 431
+      },
+      "bbox_normalized": {
+        "x1": 0.7609,
+        "y1": 0.4347,
+        "x2": 0.8531,
+        "y2": 0.5986
+      },
+      "centroid": {
+        "x": 1033,
+        "y": 372
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            974,
+            390
+          ],
+          [
+            974,
+            421
+          ],
+          [
+            992,
+            421
+          ],
+          [
+            974,
+            430
+          ],
+          [
+            1091,
+            425
+          ],
+          [
+            1084,
+            410
+          ],
+          [
+            1087,
+            421
+          ],
+          [
+            1024,
+            425
+          ],
+          [
+            994,
+            377
+          ],
+          [
+            999,
+            397
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7609,
+            0.5417
+          ],
+          [
+            0.7609,
+            0.5847
+          ],
+          [
+            0.775,
+            0.5847
+          ],
+          [
+            0.7609,
+            0.5972
+          ],
+          [
+            0.8523,
+            0.5903
+          ],
+          [
+            0.8469,
+            0.5694
+          ],
+          [
+            0.8492,
+            0.5847
+          ],
+          [
+            0.8,
+            0.5903
+          ],
+          [
+            0.7766,
+            0.5236
+          ],
+          [
+            0.7805,
+            0.5514
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_006_person",
+      "class": "person",
+      "confidence": 0.621,
+      "bbox": {
+        "x1": 1085,
+        "y1": 323,
+        "x2": 1225,
+        "y2": 451
+      },
+      "bbox_normalized": {
+        "x1": 0.8477,
+        "y1": 0.4486,
+        "x2": 0.957,
+        "y2": 0.6264
+      },
+      "centroid": {
+        "x": 1155,
+        "y": 387
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo",
+      "sources": [
+        "yolo"
+      ],
+      "orientation_deg": -22.68,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1224,
+            323
+          ],
+          [
+            1203,
+            323
+          ],
+          [
+            1195,
+            354
+          ],
+          [
+            1209,
+            384
+          ],
+          [
+            1197,
+            361
+          ],
+          [
+            1195,
+            383
+          ],
+          [
+            1088,
+            385
+          ],
+          [
+            1085,
+            450
+          ],
+          [
+            1224,
+            422
+          ],
+          [
+            1208,
+            393
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9563,
+            0.4486
+          ],
+          [
+            0.9398,
+            0.4486
+          ],
+          [
+            0.9336,
+            0.4917
+          ],
+          [
+            0.9445,
+            0.5333
+          ],
+          [
+            0.9352,
+            0.5014
+          ],
+          [
+            0.9336,
+            0.5319
+          ],
+          [
+            0.85,
+            0.5347
+          ],
+          [
+            0.8477,
+            0.625
+          ],
+          [
+            0.9563,
+            0.5861
+          ],
+          [
+            0.9437,
+            0.5458
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_007_chair",
+      "class": "chair",
+      "confidence": 0.54,
+      "bbox": {
+        "x1": 61,
+        "y1": 317,
+        "x2": 231,
+        "y2": 607
+      },
+      "bbox_normalized": {
+        "x1": 0.0477,
+        "y1": 0.4403,
+        "x2": 0.1805,
+        "y2": 0.8431
+      },
+      "centroid": {
+        "x": 146,
+        "y": 462
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            61,
+            317
+          ],
+          [
+            80,
+            442
+          ],
+          [
+            137,
+            462
+          ],
+          [
+            67,
+            484
+          ],
+          [
+            134,
+            490
+          ],
+          [
+            61,
+            571
+          ],
+          [
+            230,
+            606
+          ],
+          [
+            230,
+            414
+          ],
+          [
+            147,
+            506
+          ],
+          [
+            222,
+            555
+          ],
+          [
+            139,
+            514
+          ],
+          [
+            153,
+            593
+          ],
+          [
+            125,
+            516
+          ],
+          [
+            230,
+            317
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.0477,
+            0.4403
+          ],
+          [
+            0.0625,
+            0.6139
+          ],
+          [
+            0.107,
+            0.6417
+          ],
+          [
+            0.0523,
+            0.6722
+          ],
+          [
+            0.1047,
+            0.6806
+          ],
+          [
+            0.0477,
+            0.7931
+          ],
+          [
+            0.1797,
+            0.8417
+          ],
+          [
+            0.1797,
+            0.575
+          ],
+          [
+            0.1148,
+            0.7028
+          ],
+          [
+            0.1734,
+            0.7708
+          ],
+          [
+            0.1086,
+            0.7139
+          ],
+          [
+            0.1195,
+            0.8236
+          ],
+          [
+            0.0977,
+            0.7167
+          ],
+          [
+            0.1797,
+            0.4403
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_008_person",
+      "class": "person",
+      "confidence": 0.482,
+      "bbox": {
+        "x1": 1053,
+        "y1": 301,
+        "x2": 1125,
+        "y2": 385
+      },
+      "bbox_normalized": {
+        "x1": 0.8227,
+        "y1": 0.4181,
+        "x2": 0.8789,
+        "y2": 0.5347
+      },
+      "centroid": {
+        "x": 1089,
+        "y": 343
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo",
+      "sources": [
+        "yolo"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1053,
+            301
+          ],
+          [
+            1053,
+            313
+          ],
+          [
+            1070,
+            317
+          ],
+          [
+            1069,
+            306
+          ],
+          [
+            1087,
+            305
+          ],
+          [
+            1086,
+            331
+          ],
+          [
+            1109,
+            350
+          ],
+          [
+            1108,
+            322
+          ],
+          [
+            1124,
+            321
+          ],
+          [
+            1124,
+            301
+          ],
+          [
+            1109,
+            301
+          ],
+          [
+            1104,
+            342
+          ],
+          [
+            1104,
+            301
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.8227,
+            0.4181
+          ],
+          [
+            0.8227,
+            0.4347
+          ],
+          [
+            0.8359,
+            0.4403
+          ],
+          [
+            0.8352,
+            0.425
+          ],
+          [
+            0.8492,
+            0.4236
+          ],
+          [
+            0.8484,
+            0.4597
+          ],
+          [
+            0.8664,
+            0.4861
+          ],
+          [
+            0.8656,
+            0.4472
+          ],
+          [
+            0.8781,
+            0.4458
+          ],
+          [
+            0.8781,
+            0.4181
+          ],
+          [
+            0.8664,
+            0.4181
+          ],
+          [
+            0.8625,
+            0.475
+          ],
+          [
+            0.8625,
+            0.4181
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_009_chair",
+      "class": "chair",
+      "confidence": 0.479,
+      "bbox": {
+        "x1": 284,
+        "y1": 294,
+        "x2": 385,
+        "y2": 451
+      },
+      "bbox_normalized": {
+        "x1": 0.2219,
+        "y1": 0.4083,
+        "x2": 0.3008,
+        "y2": 0.6264
+      },
+      "centroid": {
+        "x": 334,
+        "y": 372
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            284,
+            294
+          ],
+          [
+            284,
+            308
+          ],
+          [
+            333,
+            315
+          ],
+          [
+            318,
+            388
+          ],
+          [
+            338,
+            380
+          ],
+          [
+            348,
+            397
+          ],
+          [
+            375,
+            362
+          ],
+          [
+            380,
+            301
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.2219,
+            0.4083
+          ],
+          [
+            0.2219,
+            0.4278
+          ],
+          [
+            0.2602,
+            0.4375
+          ],
+          [
+            0.2484,
+            0.5389
+          ],
+          [
+            0.2641,
+            0.5278
+          ],
+          [
+            0.2719,
+            0.5514
+          ],
+          [
+            0.293,
+            0.5028
+          ],
+          [
+            0.2969,
+            0.4181
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_010_potted_plant",
+      "class": "potted plant",
+      "confidence": 0.561,
+      "bbox": {
+        "x1": 527,
+        "y1": 212,
+        "x2": 574,
+        "y2": 267
+      },
+      "bbox_normalized": {
+        "x1": 0.4117,
+        "y1": 0.2944,
+        "x2": 0.4484,
+        "y2": 0.3708
+      },
+      "centroid": {
+        "x": 550,
+        "y": 239
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            527,
+            212
+          ],
+          [
+            527,
+            254
+          ],
+          [
+            549,
+            263
+          ],
+          [
+            556,
+            246
+          ],
+          [
+            570,
+            255
+          ],
+          [
+            573,
+            266
+          ],
+          [
+            573,
+            212
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.4117,
+            0.2944
+          ],
+          [
+            0.4117,
+            0.3528
+          ],
+          [
+            0.4289,
+            0.3653
+          ],
+          [
+            0.4344,
+            0.3417
+          ],
+          [
+            0.4453,
+            0.3542
+          ],
+          [
+            0.4477,
+            0.3694
+          ],
+          [
+            0.4477,
+            0.2944
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_011_chair",
+      "class": "chair",
+      "confidence": 0.411,
+      "bbox": {
+        "x1": 1159,
+        "y1": 419,
+        "x2": 1280,
+        "y2": 499
+      },
+      "bbox_normalized": {
+        "x1": 0.9055,
+        "y1": 0.5819,
+        "x2": 1.0,
+        "y2": 0.6931
+      },
+      "centroid": {
+        "x": 1219,
+        "y": 459
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo",
+      "sources": [
+        "yolo"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1159,
+            459
+          ],
+          [
+            1159,
+            498
+          ],
+          [
+            1260,
+            498
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9055,
+            0.6375
+          ],
+          [
+            0.9055,
+            0.6917
+          ],
+          [
+            0.9844,
+            0.6917
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_012_potted_plant",
+      "class": "potted plant",
+      "confidence": 0.386,
+      "bbox": {
+        "x1": 828,
+        "y1": 304,
+        "x2": 889,
+        "y2": 352
+      },
+      "bbox_normalized": {
+        "x1": 0.6469,
+        "y1": 0.4222,
+        "x2": 0.6945,
+        "y2": 0.4889
+      },
+      "centroid": {
+        "x": 858,
+        "y": 328
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            828,
+            304
+          ],
+          [
+            828,
+            310
+          ],
+          [
+            840,
+            309
+          ],
+          [
+            843,
+            316
+          ],
+          [
+            846,
+            305
+          ],
+          [
+            878,
+            306
+          ],
+          [
+            881,
+            311
+          ],
+          [
+            888,
+            311
+          ],
+          [
+            888,
+            304
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.6469,
+            0.4222
+          ],
+          [
+            0.6469,
+            0.4306
+          ],
+          [
+            0.6562,
+            0.4292
+          ],
+          [
+            0.6586,
+            0.4389
+          ],
+          [
+            0.6609,
+            0.4236
+          ],
+          [
+            0.6859,
+            0.425
+          ],
+          [
+            0.6883,
+            0.4319
+          ],
+          [
+            0.6937,
+            0.4319
+          ],
+          [
+            0.6937,
+            0.4222
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_013_potted_plant",
+      "class": "potted plant",
+      "confidence": 0.361,
+      "bbox": {
+        "x1": 751,
+        "y1": 294,
+        "x2": 803,
+        "y2": 324
+      },
+      "bbox_normalized": {
+        "x1": 0.5867,
+        "y1": 0.4083,
+        "x2": 0.6273,
+        "y2": 0.45
+      },
+      "centroid": {
+        "x": 777,
+        "y": 309
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo",
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            751,
+            323
+          ],
+          [
+            773,
+            323
+          ],
+          [
+            770,
+            309
+          ],
+          [
+            752,
+            310
+          ],
+          [
+            768,
+            305
+          ],
+          [
+            766,
+            297
+          ],
+          [
+            771,
+            305
+          ],
+          [
+            774,
+            298
+          ],
+          [
+            800,
+            304
+          ],
+          [
+            802,
+            294
+          ],
+          [
+            751,
+            294
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.5867,
+            0.4486
+          ],
+          [
+            0.6039,
+            0.4486
+          ],
+          [
+            0.6016,
+            0.4292
+          ],
+          [
+            0.5875,
+            0.4306
+          ],
+          [
+            0.6,
+            0.4236
+          ],
+          [
+            0.5984,
+            0.4125
+          ],
+          [
+            0.6023,
+            0.4236
+          ],
+          [
+            0.6047,
+            0.4139
+          ],
+          [
+            0.625,
+            0.4222
+          ],
+          [
+            0.6266,
+            0.4083
+          ],
+          [
+            0.5867,
+            0.4083
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_001_television",
+      "class": "television",
+      "confidence": 0.677,
+      "bbox": {
+        "x1": 1208,
+        "y1": 387,
+        "x2": 1267,
+        "y2": 424
+      },
+      "bbox_normalized": {
+        "x1": 0.9437,
+        "y1": 0.5375,
+        "x2": 0.9898,
+        "y2": 0.5889
+      },
+      "centroid": {
+        "x": 1237,
+        "y": 405
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1208,
+            387
+          ],
+          [
+            1208,
+            422
+          ],
+          [
+            1214,
+            421
+          ],
+          [
+            1213,
+            411
+          ],
+          [
+            1226,
+            423
+          ],
+          [
+            1209,
+            393
+          ],
+          [
+            1236,
+            391
+          ],
+          [
+            1237,
+            387
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9437,
+            0.5375
+          ],
+          [
+            0.9437,
+            0.5861
+          ],
+          [
+            0.9484,
+            0.5847
+          ],
+          [
+            0.9477,
+            0.5708
+          ],
+          [
+            0.9578,
+            0.5875
+          ],
+          [
+            0.9445,
+            0.5458
+          ],
+          [
+            0.9656,
+            0.5431
+          ],
+          [
+            0.9664,
+            0.5375
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_006_television",
+      "class": "television",
+      "confidence": 0.524,
+      "bbox": {
+        "x1": 921,
+        "y1": 309,
+        "x2": 968,
+        "y2": 350
+      },
+      "bbox_normalized": {
+        "x1": 0.7195,
+        "y1": 0.4292,
+        "x2": 0.7562,
+        "y2": 0.4861
+      },
+      "centroid": {
+        "x": 944,
+        "y": 329
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            921,
+            309
+          ],
+          [
+            921,
+            319
+          ],
+          [
+            929,
+            320
+          ],
+          [
+            930,
+            319
+          ],
+          [
+            929,
+            309
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7195,
+            0.4292
+          ],
+          [
+            0.7195,
+            0.4431
+          ],
+          [
+            0.7258,
+            0.4444
+          ],
+          [
+            0.7266,
+            0.4431
+          ],
+          [
+            0.7258,
+            0.4292
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_007_television",
+      "class": "television",
+      "confidence": 0.513,
+      "bbox": {
+        "x1": 879,
+        "y1": 310,
+        "x2": 915,
+        "y2": 348
+      },
+      "bbox_normalized": {
+        "x1": 0.6867,
+        "y1": 0.4306,
+        "x2": 0.7148,
+        "y2": 0.4833
+      },
+      "centroid": {
+        "x": 897,
+        "y": 329
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            879,
+            310
+          ],
+          [
+            910,
+            311
+          ],
+          [
+            910,
+            336
+          ],
+          [
+            913,
+            335
+          ],
+          [
+            914,
+            310
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.6867,
+            0.4306
+          ],
+          [
+            0.7109,
+            0.4319
+          ],
+          [
+            0.7109,
+            0.4667
+          ],
+          [
+            0.7133,
+            0.4653
+          ],
+          [
+            0.7141,
+            0.4306
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_008_television",
+      "class": "television",
+      "confidence": 0.422,
+      "bbox": {
+        "x1": 1156,
+        "y1": 417,
+        "x2": 1280,
+        "y2": 504
+      },
+      "bbox_normalized": {
+        "x1": 0.9031,
+        "y1": 0.5792,
+        "x2": 1.0,
+        "y2": 0.7
+      },
+      "centroid": {
+        "x": 1218,
+        "y": 460
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1156,
+            457
+          ],
+          [
+            1156,
+            503
+          ],
+          [
+            1273,
+            503
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9031,
+            0.6347
+          ],
+          [
+            0.9031,
+            0.6986
+          ],
+          [
+            0.9945,
+            0.6986
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_011_ceiling",
+      "class": "ceiling",
+      "confidence": 0.292,
+      "bbox": {
+        "x1": 11,
+        "y1": 0,
+        "x2": 987,
+        "y2": 132
+      },
+      "bbox_normalized": {
+        "x1": 0.0086,
+        "y1": 0.0,
+        "x2": 0.7711,
+        "y2": 0.1833
+      },
+      "centroid": {
+        "x": 499,
+        "y": 66
+      },
+      "surface_relevant": true,
+      "material_hint": "unknown",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            11,
+            0
+          ],
+          [
+            11,
+            131
+          ],
+          [
+            700,
+            124
+          ],
+          [
+            383,
+            78
+          ],
+          [
+            515,
+            0
+          ],
+          [
+            220,
+            0
+          ],
+          [
+            294,
+            125
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.0086,
+            0.0
+          ],
+          [
+            0.0086,
+            0.1819
+          ],
+          [
+            0.5469,
+            0.1722
+          ],
+          [
+            0.2992,
+            0.1083
+          ],
+          [
+            0.4023,
+            0.0
+          ],
+          [
+            0.1719,
+            0.0
+          ],
+          [
+            0.2297,
+            0.1736
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_012_television",
+      "class": "television",
+      "confidence": 0.276,
+      "bbox": {
+        "x1": 1219,
+        "y1": 337,
+        "x2": 1278,
+        "y2": 386
+      },
+      "bbox_normalized": {
+        "x1": 0.9523,
+        "y1": 0.4681,
+        "x2": 0.9984,
+        "y2": 0.5361
+      },
+      "centroid": {
+        "x": 1248,
+        "y": 361
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1219,
+            371
+          ],
+          [
+            1233,
+            338
+          ],
+          [
+            1259,
+            342
+          ],
+          [
+            1277,
+            337
+          ],
+          [
+            1219,
+            337
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9523,
+            0.5153
+          ],
+          [
+            0.9633,
+            0.4694
+          ],
+          [
+            0.9836,
+            0.475
+          ],
+          [
+            0.9977,
+            0.4681
+          ],
+          [
+            0.9523,
+            0.4681
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_013_air_conditioner",
+      "class": "air conditioner",
+      "confidence": 0.275,
+      "bbox": {
+        "x1": 996,
+        "y1": 42,
+        "x2": 1161,
+        "y2": 96
+      },
+      "bbox_normalized": {
+        "x1": 0.7781,
+        "y1": 0.0583,
+        "x2": 0.907,
+        "y2": 0.1333
+      },
+      "centroid": {
+        "x": 1078,
+        "y": 69
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            996,
+            93
+          ],
+          [
+            1160,
+            95
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7781,
+            0.1292
+          ],
+          [
+            0.9062,
+            0.1319
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_014_lamp",
+      "class": "lamp",
+      "confidence": 0.273,
+      "bbox": {
+        "x1": 609,
+        "y1": 0,
+        "x2": 705,
+        "y2": 131
+      },
+      "bbox_normalized": {
+        "x1": 0.4758,
+        "y1": 0.0,
+        "x2": 0.5508,
+        "y2": 0.1819
+      },
+      "centroid": {
+        "x": 657,
+        "y": 65
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            609,
+            0
+          ],
+          [
+            609,
+            45
+          ],
+          [
+            704,
+            48
+          ],
+          [
+            704,
+            0
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.4758,
+            0.0
+          ],
+          [
+            0.4758,
+            0.0625
+          ],
+          [
+            0.55,
+            0.0667
+          ],
+          [
+            0.55,
+            0.0
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_015_ceiling",
+      "class": "ceiling",
+      "confidence": 0.265,
+      "bbox": {
+        "x1": 658,
+        "y1": 6,
+        "x2": 1279,
+        "y2": 184
+      },
+      "bbox_normalized": {
+        "x1": 0.5141,
+        "y1": 0.0083,
+        "x2": 0.9992,
+        "y2": 0.2556
+      },
+      "centroid": {
+        "x": 968,
+        "y": 95
+      },
+      "surface_relevant": true,
+      "material_hint": "unknown",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -87.68,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            946,
+            117
+          ],
+          [
+            1278,
+            130
+          ],
+          [
+            1278,
+            110
+          ],
+          [
+            1143,
+            105
+          ],
+          [
+            1172,
+            93
+          ],
+          [
+            1005,
+            89
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7391,
+            0.1625
+          ],
+          [
+            0.9984,
+            0.1806
+          ],
+          [
+            0.9984,
+            0.1528
+          ],
+          [
+            0.893,
+            0.1458
+          ],
+          [
+            0.9156,
+            0.1292
+          ],
+          [
+            0.7852,
+            0.1236
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_018_fire_extinguisher",
+      "class": "fire extinguisher",
+      "confidence": 0.233,
+      "bbox": {
+        "x1": 914,
+        "y1": 240,
+        "x2": 936,
+        "y2": 296
+      },
+      "bbox_normalized": {
+        "x1": 0.7141,
+        "y1": 0.3333,
+        "x2": 0.7312,
+        "y2": 0.4111
+      },
+      "centroid": {
+        "x": 925,
+        "y": 268
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            914,
+            240
+          ],
+          [
+            914,
+            295
+          ],
+          [
+            920,
+            295
+          ],
+          [
+            915,
+            269
+          ],
+          [
+            926,
+            259
+          ],
+          [
+            933,
+            267
+          ],
+          [
+            929,
+            295
+          ],
+          [
+            935,
+            295
+          ],
+          [
+            935,
+            240
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7141,
+            0.3333
+          ],
+          [
+            0.7141,
+            0.4097
+          ],
+          [
+            0.7188,
+            0.4097
+          ],
+          [
+            0.7148,
+            0.3736
+          ],
+          [
+            0.7234,
+            0.3597
+          ],
+          [
+            0.7289,
+            0.3708
+          ],
+          [
+            0.7258,
+            0.4097
+          ],
+          [
+            0.7305,
+            0.4097
+          ],
+          [
+            0.7305,
+            0.3333
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_019_television",
+      "class": "television",
+      "confidence": 0.227,
+      "bbox": {
+        "x1": 962,
+        "y1": 308,
+        "x2": 1007,
+        "y2": 351
+      },
+      "bbox_normalized": {
+        "x1": 0.7516,
+        "y1": 0.4278,
+        "x2": 0.7867,
+        "y2": 0.4875
+      },
+      "centroid": {
+        "x": 984,
+        "y": 329
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            966,
+            349
+          ],
+          [
+            1006,
+            350
+          ],
+          [
+            1006,
+            338
+          ],
+          [
+            997,
+            337
+          ],
+          [
+            1006,
+            333
+          ],
+          [
+            1006,
+            328
+          ],
+          [
+            997,
+            330
+          ],
+          [
+            978,
+            323
+          ],
+          [
+            979,
+            337
+          ],
+          [
+            992,
+            342
+          ],
+          [
+            987,
+            347
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7547,
+            0.4847
+          ],
+          [
+            0.7859,
+            0.4861
+          ],
+          [
+            0.7859,
+            0.4694
+          ],
+          [
+            0.7789,
+            0.4681
+          ],
+          [
+            0.7859,
+            0.4625
+          ],
+          [
+            0.7859,
+            0.4556
+          ],
+          [
+            0.7789,
+            0.4583
+          ],
+          [
+            0.7641,
+            0.4486
+          ],
+          [
+            0.7648,
+            0.4681
+          ],
+          [
+            0.775,
+            0.475
+          ],
+          [
+            0.7711,
+            0.4819
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_022_floor",
+      "class": "floor",
+      "confidence": 0.214,
+      "bbox": {
+        "x1": 0,
+        "y1": 413,
+        "x2": 1264,
+        "y2": 719
+      },
+      "bbox_normalized": {
+        "x1": 0.0,
+        "y1": 0.5736,
+        "x2": 0.9875,
+        "y2": 0.9986
+      },
+      "centroid": {
+        "x": 632,
+        "y": 566
+      },
+      "surface_relevant": true,
+      "material_hint": "unknown",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -86.89,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            278,
+            428
+          ],
+          [
+            148,
+            506
+          ],
+          [
+            221,
+            556
+          ],
+          [
+            139,
+            514
+          ],
+          [
+            152,
+            598
+          ],
+          [
+            126,
+            512
+          ],
+          [
+            55,
+            567
+          ],
+          [
+            121,
+            635
+          ],
+          [
+            29,
+            574
+          ],
+          [
+            62,
+            690
+          ],
+          [
+            229,
+            656
+          ],
+          [
+            295,
+            718
+          ],
+          [
+            309,
+            481
+          ],
+          [
+            226,
+            477
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.2172,
+            0.5944
+          ],
+          [
+            0.1156,
+            0.7028
+          ],
+          [
+            0.1727,
+            0.7722
+          ],
+          [
+            0.1086,
+            0.7139
+          ],
+          [
+            0.1187,
+            0.8306
+          ],
+          [
+            0.0984,
+            0.7111
+          ],
+          [
+            0.043,
+            0.7875
+          ],
+          [
+            0.0945,
+            0.8819
+          ],
+          [
+            0.0227,
+            0.7972
+          ],
+          [
+            0.0484,
+            0.9583
+          ],
+          [
+            0.1789,
+            0.9111
+          ],
+          [
+            0.2305,
+            0.9972
+          ],
+          [
+            0.2414,
+            0.6681
+          ],
+          [
+            0.1766,
+            0.6625
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_023_air_conditioner",
+      "class": "air conditioner",
+      "confidence": 0.214,
+      "bbox": {
+        "x1": 943,
+        "y1": 41,
+        "x2": 1172,
+        "y2": 123
+      },
+      "bbox_normalized": {
+        "x1": 0.7367,
+        "y1": 0.0569,
+        "x2": 0.9156,
+        "y2": 0.1708
+      },
+      "centroid": {
+        "x": 1057,
+        "y": 82
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            946,
+            117
+          ],
+          [
+            1171,
+            122
+          ],
+          [
+            1171,
+            105
+          ],
+          [
+            1142,
+            104
+          ],
+          [
+            1171,
+            92
+          ],
+          [
+            1005,
+            89
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7391,
+            0.1625
+          ],
+          [
+            0.9148,
+            0.1694
+          ],
+          [
+            0.9148,
+            0.1458
+          ],
+          [
+            0.8922,
+            0.1444
+          ],
+          [
+            0.9148,
+            0.1278
+          ],
+          [
+            0.7852,
+            0.1236
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_024_lamp",
+      "class": "lamp",
+      "confidence": 0.202,
+      "bbox": {
+        "x1": 883,
+        "y1": 19,
+        "x2": 926,
+        "y2": 63
+      },
+      "bbox_normalized": {
+        "x1": 0.6898,
+        "y1": 0.0264,
+        "x2": 0.7234,
+        "y2": 0.0875
+      },
+      "centroid": {
+        "x": 904,
+        "y": 41
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            891,
+            24
+          ],
+          [
+            887,
+            28
+          ],
+          [
+            885,
+            58
+          ],
+          [
+            890,
+            62
+          ],
+          [
+            919,
+            58
+          ],
+          [
+            920,
+            51
+          ],
+          [
+            904,
+            40
+          ],
+          [
+            903,
+            29
+          ],
+          [
+            898,
+            27
+          ],
+          [
+            902,
+            24
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.6961,
+            0.0333
+          ],
+          [
+            0.693,
+            0.0389
+          ],
+          [
+            0.6914,
+            0.0806
+          ],
+          [
+            0.6953,
+            0.0861
+          ],
+          [
+            0.718,
+            0.0806
+          ],
+          [
+            0.7188,
+            0.0708
+          ],
+          [
+            0.7063,
+            0.0556
+          ],
+          [
+            0.7055,
+            0.0403
+          ],
+          [
+            0.7016,
+            0.0375
+          ],
+          [
+            0.7047,
+            0.0333
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_025_floor",
+      "class": "floor",
+      "confidence": 0.2,
+      "bbox": {
+        "x1": 0,
+        "y1": 421,
+        "x2": 603,
+        "y2": 719
+      },
+      "bbox_normalized": {
+        "x1": 0.0,
+        "y1": 0.5847,
+        "x2": 0.4711,
+        "y2": 0.9986
+      },
+      "centroid": {
+        "x": 301,
+        "y": 570
+      },
+      "surface_relevant": true,
+      "material_hint": "unknown",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -86.97,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            279,
+            429
+          ],
+          [
+            148,
+            506
+          ],
+          [
+            222,
+            556
+          ],
+          [
+            139,
+            514
+          ],
+          [
+            152,
+            599
+          ],
+          [
+            126,
+            512
+          ],
+          [
+            55,
+            567
+          ],
+          [
+            121,
+            636
+          ],
+          [
+            29,
+            574
+          ],
+          [
+            64,
+            688
+          ],
+          [
+            140,
+            642
+          ],
+          [
+            291,
+            714
+          ],
+          [
+            303,
+            470
+          ],
+          [
+            225,
+            476
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.218,
+            0.5958
+          ],
+          [
+            0.1156,
+            0.7028
+          ],
+          [
+            0.1734,
+            0.7722
+          ],
+          [
+            0.1086,
+            0.7139
+          ],
+          [
+            0.1187,
+            0.8319
+          ],
+          [
+            0.0984,
+            0.7111
+          ],
+          [
+            0.043,
+            0.7875
+          ],
+          [
+            0.0945,
+            0.8833
+          ],
+          [
+            0.0227,
+            0.7972
+          ],
+          [
+            0.05,
+            0.9556
+          ],
+          [
+            0.1094,
+            0.8917
+          ],
+          [
+            0.2273,
+            0.9917
+          ],
+          [
+            0.2367,
+            0.6528
+          ],
+          [
+            0.1758,
+            0.6611
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_026_vase",
+      "class": "vase",
+      "confidence": 0.2,
+      "bbox": {
+        "x1": 1017,
+        "y1": 386,
+        "x2": 1066,
+        "y2": 427
+      },
+      "bbox_normalized": {
+        "x1": 0.7945,
+        "y1": 0.5361,
+        "x2": 0.8328,
+        "y2": 0.5931
+      },
+      "centroid": {
+        "x": 1041,
+        "y": 406
+      },
+      "surface_relevant": true,
+      "material_hint": "ceramic",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1017,
+            395
+          ],
+          [
+            1017,
+            419
+          ],
+          [
+            1019,
+            419
+          ],
+          [
+            1021,
+            415
+          ],
+          [
+            1021,
+            408
+          ],
+          [
+            1017,
+            403
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.7945,
+            0.5486
+          ],
+          [
+            0.7945,
+            0.5819
+          ],
+          [
+            0.7961,
+            0.5819
+          ],
+          [
+            0.7977,
+            0.5764
+          ],
+          [
+            0.7977,
+            0.5667
+          ],
+          [
+            0.7945,
+            0.5597
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_027_lamp",
+      "class": "lamp",
+      "confidence": 0.177,
+      "bbox": {
+        "x1": 260,
+        "y1": 154,
+        "x2": 318,
+        "y2": 192
+      },
+      "bbox_normalized": {
+        "x1": 0.2031,
+        "y1": 0.2139,
+        "x2": 0.2484,
+        "y2": 0.2667
+      },
+      "centroid": {
+        "x": 289,
+        "y": 173
+      },
+      "surface_relevant": true,
+      "material_hint": "mixed",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            260,
+            154
+          ],
+          [
+            260,
+            191
+          ],
+          [
+            317,
+            191
+          ],
+          [
+            317,
+            154
+          ],
+          [
+            293,
+            154
+          ],
+          [
+            294,
+            169
+          ],
+          [
+            316,
+            174
+          ],
+          [
+            315,
+            188
+          ],
+          [
+            284,
+            184
+          ],
+          [
+            286,
+            154
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.2031,
+            0.2139
+          ],
+          [
+            0.2031,
+            0.2653
+          ],
+          [
+            0.2477,
+            0.2653
+          ],
+          [
+            0.2477,
+            0.2139
+          ],
+          [
+            0.2289,
+            0.2139
+          ],
+          [
+            0.2297,
+            0.2347
+          ],
+          [
+            0.2469,
+            0.2417
+          ],
+          [
+            0.2461,
+            0.2611
+          ],
+          [
+            0.2219,
+            0.2556
+          ],
+          [
+            0.2234,
+            0.2139
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_028_plant",
+      "class": "plant",
+      "confidence": 0.165,
+      "bbox": {
+        "x1": 619,
+        "y1": 284,
+        "x2": 673,
+        "y2": 323
+      },
+      "bbox_normalized": {
+        "x1": 0.4836,
+        "y1": 0.3944,
+        "x2": 0.5258,
+        "y2": 0.4486
+      },
+      "centroid": {
+        "x": 646,
+        "y": 303
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            628,
+            284
+          ],
+          [
+            648,
+            288
+          ],
+          [
+            650,
+            298
+          ],
+          [
+            654,
+            293
+          ],
+          [
+            652,
+            306
+          ],
+          [
+            666,
+            309
+          ],
+          [
+            657,
+            316
+          ],
+          [
+            659,
+            322
+          ],
+          [
+            672,
+            322
+          ],
+          [
+            672,
+            284
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.4906,
+            0.3944
+          ],
+          [
+            0.5062,
+            0.4
+          ],
+          [
+            0.5078,
+            0.4139
+          ],
+          [
+            0.5109,
+            0.4069
+          ],
+          [
+            0.5094,
+            0.425
+          ],
+          [
+            0.5203,
+            0.4292
+          ],
+          [
+            0.5133,
+            0.4389
+          ],
+          [
+            0.5148,
+            0.4472
+          ],
+          [
+            0.525,
+            0.4472
+          ],
+          [
+            0.525,
+            0.3944
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_029_air_conditioner",
+      "class": "air conditioner",
+      "confidence": 0.156,
+      "bbox": {
+        "x1": 70,
+        "y1": 113,
+        "x2": 162,
+        "y2": 158
+      },
+      "bbox_normalized": {
+        "x1": 0.0547,
+        "y1": 0.1569,
+        "x2": 0.1266,
+        "y2": 0.2194
+      },
+      "centroid": {
+        "x": 116,
+        "y": 135
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            70,
+            113
+          ],
+          [
+            70,
+            157
+          ],
+          [
+            161,
+            157
+          ],
+          [
+            161,
+            113
+          ],
+          [
+            122,
+            113
+          ],
+          [
+            159,
+            129
+          ],
+          [
+            159,
+            151
+          ],
+          [
+            112,
+            146
+          ],
+          [
+            110,
+            113
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.0547,
+            0.1569
+          ],
+          [
+            0.0547,
+            0.2181
+          ],
+          [
+            0.1258,
+            0.2181
+          ],
+          [
+            0.1258,
+            0.1569
+          ],
+          [
+            0.0953,
+            0.1569
+          ],
+          [
+            0.1242,
+            0.1792
+          ],
+          [
+            0.1242,
+            0.2097
+          ],
+          [
+            0.0875,
+            0.2028
+          ],
+          [
+            0.0859,
+            0.1569
+          ]
+        ]
+      }
+    },
+    {
+      "object_id": "obj_ov_030_television",
+      "class": "television",
+      "confidence": 0.154,
+      "bbox": {
+        "x1": 1262,
+        "y1": 389,
+        "x2": 1279,
+        "y2": 421
+      },
+      "bbox_normalized": {
+        "x1": 0.9859,
+        "y1": 0.5403,
+        "x2": 0.9992,
+        "y2": 0.5847
+      },
+      "centroid": {
+        "x": 1270,
+        "y": 405
+      },
+      "surface_relevant": false,
+      "material_hint": "pending_vlm",
+      "condition": "pending_vlm",
+      "relationships": {},
+      "source": "yolo_world",
+      "sources": [
+        "yolo_world"
+      ],
+      "orientation_deg": -90.0,
+      "mask_polygon": {
+        "points_pixel": [
+          [
+            1262,
+            395
+          ],
+          [
+            1263,
+            400
+          ],
+          [
+            1278,
+            399
+          ],
+          [
+            1278,
+            395
+          ],
+          [
+            1270,
+            395
+          ],
+          [
+            1269,
+            396
+          ]
+        ],
+        "points_normalized": [
+          [
+            0.9859,
+            0.5486
+          ],
+          [
+            0.9867,
+            0.5556
+          ],
+          [
+            0.9984,
+            0.5542
+          ],
+          [
+            0.9984,
+            0.5486
+          ],
+          [
+            0.9922,
+            0.5486
+          ],
+          [
+            0.9914,
+            0.55
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -50,35 +50,6 @@ YOLO_WORLD_CONFIDENCE_THRESHOLD = float(
     )
 )
 
-'''
-# COCO (what yolov8n.pt was trained on) has no classes for these — this is
-# exactly the "not floors, windows, other things" gap. Two ways to close it:
-#   1) swap YOLO_WEIGHTS_PATH for a fine-tuned model that includes these classes
-#   2) wire up detect_open_vocabulary_objects() in object_detection/detector.py,
-#      which uses YOLO-World with this exact list as the prompt classes
-NON_COCO_SURFACE_CLASSES = [
-    "floor", "window", "wall", "napkin", "spoon", "fork",
-    "flower vase", "menu card", "condiment holder",
-]
-
-# Which detected classes actually need surface-condition checking (stains,
-# texture). A "person" or "cell phone" detection should never enter that path.
-SURFACE_RELEVANT_CLASSES = {
-    "dining table", "chair", "cup", "bowl", "wine glass", "vase", "bottle",
-}
-
-# Cheap heuristic fallback so material_hint isn't blank before the VLM runs.
-# The VLM call in enrich_with_vlm() overwrites this when a client is configured.
-MATERIAL_HINT_BY_CLASS = {
-    "dining table": "wood",
-    "chair": "fabric",
-    "cup": "ceramic",
-    "bowl": "ceramic",
-    "wine glass": "glass",
-    "bottle": "glass",
-    "vase": "ceramic",
-}
-'''
 
 # Objects that anchor spatial relationships (everything else gets located
 # "relative to" the nearest one of these).
@@ -302,7 +273,35 @@ CLASS_SYNONYMS = {
     "ceiling fan": "fan",
     "light bulb": "light",
     "trash bin": "dustbin",
+     "lamp": "light",
+    "potted plant": "plant",      # COCO name  vs  YOLO-World name
+    "couch": "sofa",              # COCO
+    "tv": "television",           # COCO
+    "menu card": "menu",
+    "salt shaker": "condiment holder",
+    "pepper shaker": "condiment holder",
 }
+# Big "stuff" regions. Their bboxes cover a large part of the frame, so they are never
+# treated as objects sitting ON something, and never count as "on top of" a surface.
+STRUCTURAL_CLASSES = {"floor", "wall", "ceiling", "window", "door"}
+# Surfaces whose "exposed" area (bbox minus the objects sitting on it) is what gets
+# scanned for stains. SURFACE_ANCHOR_CLASSES (above) stays table-only because it is
+# also what relationships.py uses to group objects.
+EXPOSED_SURFACE_CLASSES = {"table", "dining table", "floor", "wall", "ceiling"}
+# Classes that are worth an OpenCV stain scan (windows / lights / fans / mirrors are
+# covered by the VLM condition+cleanliness check instead - adaptive thresholding on
+# glass and light fixtures only produces reflections).
+STAIN_SCAN_CLASSES = {
+    "table", "dining table", "chair", "sofa", "bench", "floor", "wall",
+    "plate", "bowl", "cup", "coffee cup", "glass", "wine glass",
+    "tray", "napkin", "vase", "flower vase",
+}
+# Never send these to the condition VLM (people are not inspection targets, and it
+# avoids uploading staff faces to a third-party API for no reason).
+CONDITION_SKIP_CLASSES = {"person"}
+# Output folder for the per-stage JSON artifacts (one file per capture_id, so
+# concurrent captures from different cafes never overwrite each other).
+OUTPUT_DIR = os.getenv("NUDGE_OUTPUT_DIR", "outputs")
 
 # ---- Quality gate ----
 BLUR_VARIANCE_THRESHOLD = float(os.getenv("BLUR_VARIANCE_THRESHOLD", "100.0"))
@@ -322,15 +321,11 @@ STAIN_MIN_AREA_PX = 30
 STAIN_MAX_AREA_PX = 5000
 STAIN_ADAPTIVE_BLOCK_SIZE = 25
 STAIN_ADAPTIVE_C = 5
+STAIN_MAX_CANDIDATES_PER_OBJECT = 5   # each candidate = 1 VLM call, so cap it
+STAIN_PERIODIC_PEAK_RATIO = 60.0      # DC-removed, windowed FFT peak/mean (see stain_detection.py)
+STAIN_MAX_CANDIDATES_TOTAL = 30       # hard ceiling of stain crops sent to the VLM per image
+STAIN_MASK_ERODE_PX = 4               # shrink the "exposed surface" mask so object edges don't leak in
 
-# ---- VLM: Qwen-VL via Alibaba Cloud DashScope (OpenAI-compatible endpoint) ----
-DASHSCOPE_API_KEY_ENV = "DASHSCOPE_API_KEY"
-# Singapore/international endpoint by default. Use
-# https://dashscope.aliyuncs.com/compatible-mode/v1 for the Beijing region, or
-# https://dashscope-us.aliyuncs.com/compatible-mode/v1 for Virginia — set
-# DASHSCOPE_BASE_URL to override rather than editing this file per-environment.
-DASHSCOPE_BASE_URL = os.getenv("DASHSCOPE_BASE_URL", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1")
-QWEN_VL_MODEL = os.getenv("QWEN_VL_MODEL", "qwen3-vl-plus")
 
 
 # config/settings.py
@@ -339,3 +334,9 @@ VLM_BASE_URL = os.getenv("VLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 # Must match a published NVIDIA NIM model id. A typo here returns HTTP 404
 # "page not found" from integrate.api.nvidia.com, not a model-not-found JSON.
 VLM_MODEL = os.getenv("VLM_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning")
+# ---- VLM call tuning ----
+VLM_TEMPERATURE = float(os.getenv("VLM_TEMPERATURE", "0.1"))       # structured output -> keep it low
+VLM_INVENTORY_MAX_TOKENS = int(os.getenv("VLM_INVENTORY_MAX_TOKENS", "2000"))
+VLM_CONDITION_MAX_TOKENS = int(os.getenv("VLM_CONDITION_MAX_TOKENS", "300"))
+VLM_DEBUG = os.getenv("VLM_DEBUG", "0") == "1"                     # print raw VLM replies
+VLM_MAX_WORKERS = int(os.getenv("VLM_MAX_WORKERS", "4"))         # parallel per-object VLM calls

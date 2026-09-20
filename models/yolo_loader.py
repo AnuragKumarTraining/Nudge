@@ -1,7 +1,6 @@
 """
-This is the file that was completely empty in the original repo (utils/model.py)
-despite main.py and master.py both importing load_yolo() from it — that import
-would fail immediately. This module is the fix.
+Model loaders. Each model is loaded ONCE per process and cached - re-loading weights
+per request is the single biggest avoidable latency cost in a SaaS deployment.
 """
 from ultralytics import YOLO, YOLOWorld
 from config.settings import YOLO_WEIGHTS_PATH, YOLO_WORLD_WEIGHTS_PATH
@@ -20,15 +19,18 @@ def load_yolo() -> YOLO:
         _model_cache = YOLO(YOLO_WEIGHTS_PATH)
     return _model_cache
 
-_yo_world_model: YOLOWorld | None = None
-
-def load_yolo_world():
-    global _yo_world_model
-
-    if _yo_world_model is None:
-
-        _yo_world_model = YOLOWorld(
-            YOLO_WORLD_WEIGHTS_PATH
-        )
-
-    return _yo_world_model
+_yolo_world_model: YOLOWorld | None = None
+_yolo_world_classes: tuple | None = None
+def load_yolo_world(class_list: list[str] | None = None) -> YOLOWorld:
+    """
+    YOLO-World turns the class list into CLIP text embeddings inside set_classes().
+    That is slow, so it is done only when the list actually changes - NOT once per
+    image like before.
+    """
+    global _yolo_world_model, _yolo_world_classes
+    if _yolo_world_model is None:
+        _yolo_world_model = YOLOWorld(YOLO_WORLD_WEIGHTS_PATH)
+    if class_list is not None and tuple(class_list) != _yolo_world_classes:
+        _yolo_world_model.set_classes(list(class_list))
+        _yolo_world_classes = tuple(class_list)
+    return _yolo_world_model

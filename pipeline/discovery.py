@@ -1,67 +1,55 @@
 """
-STAGE A — OBJECT DISCOVERY (hybrid: YOLOv8 + YOLO-World + VLM inventory).
+STAGE A - OBJECT DISCOVERY  (hybrid: YOLOv8 + YOLO-World + VLM inventory)
 
-Input : raw capture image (+ optional master for alignment)
-Output: metadata/object_discovery.json  +  a result dict the next stage consumes.
+Input : ONE pre-processed image (+ capture metadata)      <- no master / reference image
+Output: {out_dir}/{capture_id}_object_discovery.json      <- the artifact Stage B consumes
 
-Nothing in this file judges condition, cleanliness, or stains — it only
-answers "what is in the photo, where, and how is it arranged."
+Answers only "what is in the photo, where, and how is it arranged".
+It never judges condition, cleanliness or stains - that is Stage B.
+
+    image ─┬─► YOLOv8      (COCO objects)      ─┐
+           ├─► YOLO-World  (open-vocab objects) ├─► 3-way merge + dedup ─► inventory
+           └─► VLM         (gap-filling list)  ─┘
+                                                  │
+                                                  ├─► bboxes
+                                                  ├─► polygons (+ orientation)
+                                                  └─► relationships
 """
-import json
-import cv2
 import numpy as np
 
-from config.settings import YOLO_WORLD_CLASSES
+from config.settings import YOLO_WORLD_CLASSES, OUTPUT_DIR
+from core.artifacts import save_artifact
 from models.yolo_loader import load_yolo
 from models.vlm_client import VLMClient
-from preprocessing.quality_gate import check_quality
-from preprocessing.lighting import normalize_lighting
-from preprocessing.alignment import align_to_master
 from object_detection.detector import detect_objects, detect_open_vocabulary_objects
 from object_detection.vlm_inventory import detect_vlm_inventory
-from object_detection.merge import merge_detections
+from object_detection.merge import merge_detections, count_objects
 from object_detection.polygon import extract_polygon
 from object_detection.relationships import compute_relationships
 
 
 def run_object_discovery(image: np.ndarray, capture_metadata: dict,
-                         master_image_path: str | None = None,
-                         vlm_client: VLMClient | None = None) -> dict:
-    # ---- Stage 0: quality gate ----
-    quality = check_quality(image)
-    if not quality["is_passed"]:
-        return {
-            "capture_id": capture_metadata.get("capture_id"),
-            "status": "rejected",
-            "reason": "blurry",
-            "quality_gate": quality,
-        }
+                         vlm_client: VLMClient | None = None,
+                         image_path: str | None = None,
+                         preprocessing: dict | None = None,
+                         out_dir: str = OUTPUT_DIR) -> dict:
+    img_h, img_w = image.shape[:2]
+    vlm_client = vlm_client or VLMClient()
 
-    # ---- Stage 1: alignment (only if a master image is provided) ----
-    spatial_alignment = capture_metadata.get("spatial_alignment", {})
-    if master_image_path:
-        master_img = cv2.imread(master_image_path)
-        image, alignment_result = align_to_master(master_img, image, spatial_alignment)
-    else:
-        alignment_result = {"method": "none", "success": None, "warnings": []}
-
-    # ---- Stage 2: lighting normalization ----
-    ambient_lux = capture_metadata.get("environment", {}).get("ambient_lux")
-    image = normalize_lighting(image, ambient_lux)
-
-    # ---- Stage 3a: three discovery branches ----
+    # ---- Branch 1: YOLOv8 (COCO) ----
     detection = detect_objects(image, load_yolo())
     standard_objects = detection["objects"]
 
+    # ---- Branch 2: YOLO-World (open vocabulary) ----
     open_vocab_objects = detect_open_vocabulary_objects(image, YOLO_WORLD_CLASSES)
 
-    vlm_client = vlm_client or VLMClient()
+    # ---- Branch 3: VLM inventory (told what is already found, so it fills GAPS only) ----
     vlm_inventory = detect_vlm_inventory(image, standard_objects + open_vocab_objects, vlm_client)
 
-    # ---- Stage 3b: 3-way merge + dedup ----
+    # ---- 3-way merge + dedup -> COMPLETE OBJECT INVENTORY ----
     objects = merge_detections(standard_objects, open_vocab_objects, vlm_inventory)
 
-    # ---- Stage 3c: polygons + orientation, per object ----
+    # ---- per-object polygons + orientation ----
     for obj in objects:
         poly = extract_polygon(image, obj)
         obj["orientation_deg"] = poly["orientation_deg"]
@@ -70,7 +58,7 @@ def run_object_discovery(image: np.ndarray, capture_metadata: dict,
             "points_normalized": poly["points_normalized"],
         }
 
-    # ---- Stage 3d: spatial relationships ----
+    # ---- relationships (on / near / belongs_to / objects_on_surface) ----
     objects = compute_relationships(objects)
 
     # ---- DISCOVERY OUTPUT ARTIFACT ----
@@ -78,17 +66,18 @@ def run_object_discovery(image: np.ndarray, capture_metadata: dict,
         "capture_id": capture_metadata.get("capture_id"),
         "master_reference_id": capture_metadata.get("master_reference_id"),
         "status": "object_discovery_complete",
-        "quality_gate": quality,
-        "alignment_result": alignment_result,
-        "objects": objects,
-        "object_counts": detection["object_counts"],
+        "image": {"path": image_path, "width": img_w, "height": img_h},
+        "preprocessing": preprocessing or {},
+        "vlm_configured": vlm_client.is_configured,
         "sources": {
             "yolo": len(standard_objects),
             "yolo_world": len(open_vocab_objects),
             "vlm_inventory": len(vlm_inventory),
         },
+        "total_objects": len(objects),
+        "object_counts": count_objects(objects),
+        "objects": objects,
     }
-    with open("metadata/object_discovery.json", "w") as f:
-        json.dump(discovery, f, indent=2, default=str)
+    discovery["artifact_path"] = save_artifact(out_dir, discovery["capture_id"], "object_discovery", discovery)
 
     return discovery

@@ -4,6 +4,31 @@ Restructured, fixed, and extended version of the `shash` branch. Verified
 end-to-end against the repo's own `images/daily_2.jpg` + `metadata/daily_image.json`
 — see "Verified working" below.
 
+## Pipeline (current) - ONE image + its input JSON, nothing else
+```
+ image ─► quality gate ─► lighting (CLAHE if dim, from ambient_lux)          pipeline/preprocess.py
+        │
+        ├─ STAGE A  OBJECT DISCOVERY                                          pipeline/discovery.py
+        │    YOLOv8 ┐
+        │    YOLO-World ├─► 3-way merge + dedup ─► inventory ─► bboxes · polygons · relationships
+        │    VLM inventory ┘                     ──► outputs/<capture_id>_object_discovery.json
+        │
+        └─ STAGE B  CONDITION                                                 pipeline/condition_analysis.py
+             condition VLM ─► condition + cleanliness (+ material, issues)
+             surface / stain ─► OpenCV candidates ─► VLM verdict (stain / pattern / shadow)
+                                                 ──► outputs/<capture_id>_condition_analysis.json
+ final JSON ──► outputs/<capture_id>_final.json
+```
+There is no master/reference image anywhere in this flow. `preprocessing/alignment.py`
+is kept only for a possible future "diff against a stored setup" feature and is not imported.
+`master_reference_id` and `spatial_alignment` in the input JSON are ignored.
+```bash
+python main.py                                   # whole pipeline
+python main.py --stage discovery                 # Stage A only
+python main.py --stage condition --discovery-json outputs/<id>_object_discovery.json   # Stage B only
+python tests/test_pipeline_no_master.py          # regression tests (fakes for YOLO + VLM)
+```
+
 ## What was broken in the original branch (fixed here)
 
 - `main.py` and `requirements.txt` had **unresolved git merge conflicts**
