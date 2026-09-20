@@ -83,7 +83,7 @@ client: genai.Client = genai.Client(api_key=API_KEY)
 
 # --- Helper Functions ---
 def load_prompt(prompt_path: str | Path) -> str:
-    """Reads and decodes a system or user prompt template from disk.
+    """Reads and decodes system prompt template from disk.
 
     Args:
         prompt_path: File system path to the prompt file (as a string or Path object).
@@ -153,7 +153,6 @@ def load_image(
 
 
 # --- Core Pipeline ---
-
 def analyze_room_with_vlm(
     processed_image: bytes | str | Path,
     master_image: bytes | str | Path,
