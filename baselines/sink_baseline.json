@@ -1,0 +1,37 @@
+{
+    "image_shape": [
+        3264,
+        2448
+    ],
+    "brightness": 129.39,
+    "objects": [
+        {
+            "label": "bottle",
+            "bbox": [
+                329.63,
+                0.97,
+                756.74,
+                555.33
+            ],
+            "centroid": [
+                543,
+                278
+            ],
+            "confidence": 0.59
+        },
+        {
+            "label": "toilet",
+            "bbox": [
+                212.96,
+                542.42,
+                2358.16,
+                2313.27
+            ],
+            "centroid": [
+                1285,
+                1427
+            ],
+            "confidence": 0.5
+        }
+    ]
+}

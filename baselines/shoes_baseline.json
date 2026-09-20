@@ -1,0 +1,23 @@
+{
+    "image_shape": [
+        921,
+        2048
+    ],
+    "brightness": 103.59,
+    "objects": [
+        {
+            "label": "person",
+            "bbox": [
+                1754.32,
+                415.7,
+                2047.57,
+                866.66
+            ],
+            "centroid": [
+                1900,
+                641
+            ],
+            "confidence": 0.46
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "image_shape": [
+        2048,
+        921
+    ],
+    "brightness": 113.67,
+    "objects": [
+        {
+            "label": "toilet",
+            "bbox": [
+                157.76,
+                525.16,
+                744.65,
+                1596.15
+            ],
+            "centroid": [
+                451,
+                1060
+            ],
+            "confidence": 0.89
+        }
+    ]
+}
