@@ -1,1 +1,35 @@
+# Python cache & build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Virtual environment (if created in root)
+venv/
 .venv/
+env/
+
+# Model weights & large asset files
+*.pt
+*.pth
+*.onnx
+*.task
+*.bin
+
+# Input media & cropped test data
+input_images/
+cropped_faces/
+*.mp4
+*.avi
+*.mov
+
+# Generated test outputs & reports
+output_images/
+gaze_report.json
+bulb_report.json
+
+# IDE / OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
