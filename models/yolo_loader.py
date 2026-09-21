@@ -34,3 +34,15 @@ def load_yolo_world(class_list: list[str] | None = None) -> YOLOWorld:
         _yolo_world_model.set_classes(list(class_list))
         _yolo_world_classes = tuple(class_list)
     return _yolo_world_model
+
+_sam_model = None
+
+
+def load_sam():
+    """Segment Anything (via Ultralytics), loaded once and cached like the YOLO models."""
+    global _sam_model
+    if _sam_model is None:
+        from ultralytics import SAM
+        from config.settings import SAM_WEIGHTS_PATH
+        _sam_model = SAM(SAM_WEIGHTS_PATH)
+    return _sam_model

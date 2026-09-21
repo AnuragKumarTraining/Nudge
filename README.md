@@ -28,7 +28,7 @@ There is **no master/reference image** in this branch. Each capture is analysed 
 
 ## How it works
 
-![Full pipeline workflow](docs/images/pipeline_overview.svg)
+<!-- ![Full pipeline workflow](docs/images/pipeline_overview.svg) -->
 
 <details>
 <summary>Text version of the same diagram</summary>
@@ -78,9 +78,14 @@ Stage A is where object detection happens. Stage B judges what Stage A found.
 Both images below are in the repo's `images/` folder. The overlay was drawn from a discovery JSON with `tests/test.py`
 (boxes, polygons, labels and confidences).
 
-| Input: `images/daily_2.jpg` | Output overlay: `images/marked_objects.jpg` |
-|---|---|
-| ![Sample input photo](images/daily_2.jpg) | ![Detected objects drawn on the photo](images/marked_objects.jpg) |
+| Input: `images/daily_2.jpg` | Output overlay: `tests/marked_objects_corrected-2.jpg` | Segmented_output: `tests/images_out/marked_masks.jpg`|
+|---|---|---|
+| ![Sample input photo](images/daily_2.jpg) | ![Detected objects drawn on the photo](tests/marked_objects_corrected-2.jpg) |![segemented output](tests/images_out/marked_masks.jpg) |
+
+
+| Input: `images/master.jpg` | Output overlay: `tests/marked_objects_corrected-1.jpg` | Segmented_output: `tests/images_out/marked_masks_MASTER.jpg`|
+|---|---|---|
+| ![Sample input photo](images/master.jpg) | ![Detected objects drawn on the photo](tests/marked_objects_corrected-1.jpg) |![segemented output](tests/images_out/marked_masks_MASTER.jpg) |
 
 ---
 

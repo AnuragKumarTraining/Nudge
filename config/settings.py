@@ -373,3 +373,10 @@ VLM_INVENTORY_MAX_TOKENS = int(os.getenv("VLM_INVENTORY_MAX_TOKENS", "5000"))
 VLM_CONDITION_MAX_TOKENS = int(os.getenv("VLM_CONDITION_MAX_TOKENS", "300"))
 VLM_DEBUG = os.getenv("VLM_DEBUG", "0") == "1"
 VLM_MAX_WORKERS = int(os.getenv("VLM_MAX_WORKERS", "4"))
+
+# ---- Segmentation (pixel-accurate masks instead of rectangles) ----
+# Box-prompted SAM: every detected box (from YOLO, YOLO-World or Grounding DINO) is handed to
+# Segment Anything, which returns the pixels that actually belong to the object.
+USE_SEGMENTATION = os.getenv("USE_SEGMENTATION", "1") == "1"
+SAM_WEIGHTS_PATH = os.getenv("SAM_WEIGHTS_PATH", "sam2.1_b.pt")   # sam2.1_t.pt = faster, mobile_sam.pt = lightest
+POLYGON_EPSILON_RATIO = float(os.getenv("POLYGON_EPSILON_RATIO", "0.005")) 

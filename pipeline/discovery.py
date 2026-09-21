@@ -6,16 +6,18 @@ Output: {out_dir}/{capture_id}_object_discovery.json      <- the artifact Stage 
 """
 import numpy as np
 
-from config.settings import YOLO_WORLD_CLASSES, OUTPUT_DIR
+from config.settings import YOLO_WORLD_CLASSES, OUTPUT_DIR, USE_SEGMENTATION
 from core.artifacts import save_artifact
 from models.yolo_loader import load_yolo
 from models.vlm_client import VLMClient
-from models.grounding_service import GroundingService  # <--- 1. NEW IMPORT
+from models.grounding_service import GroundingService  
 from object_detection.detector import detect_objects, detect_open_vocabulary_objects
 from object_detection.vlm_inventory import detect_vlm_inventory
 from object_detection.merge import merge_detections, count_objects
 from object_detection.polygon import extract_polygon
 from object_detection.relationships import compute_relationships
+
+from object_detection.segmentation import segment_objects
 
 
 def run_object_discovery(image: np.ndarray, capture_metadata: dict,
@@ -53,6 +55,7 @@ def run_object_discovery(image: np.ndarray, capture_metadata: dict,
     # ---- 3-way merge + dedup -> COMPLETE OBJECT INVENTORY ----
     objects = merge_detections(standard_objects, open_vocab_objects, vlm_inventory)
 
+    '''
     # ---- per-object polygons + orientation ----
     for obj in objects:
         poly = extract_polygon(image, obj)
@@ -61,6 +64,20 @@ def run_object_discovery(image: np.ndarray, capture_metadata: dict,
             "points_pixel": poly["points_pixel"],
             "points_normalized": poly["points_normalized"],
         }
+
+    '''
+
+    # ---- per-object polygons + orientation ----
+    if USE_SEGMENTATION:
+        objects = segment_objects(image, objects)          # SAM: true outline per object
+    else:
+        for obj in objects:
+            poly = extract_polygon(image, obj)             # old Otsu contour inside the box
+            obj["orientation_deg"] = poly["orientation_deg"]
+            obj["mask_polygon"] = {
+                "points_pixel": poly["points_pixel"],
+                "points_normalized": poly["points_normalized"],
+            }
 
     # ---- relationships (on / near / belongs_to / objects_on_surface) ----
     objects = compute_relationships(objects)
