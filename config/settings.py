@@ -326,17 +326,48 @@ STAIN_PERIODIC_PEAK_RATIO = 60.0      # DC-removed, windowed FFT peak/mean (see 
 STAIN_MAX_CANDIDATES_TOTAL = 30       # hard ceiling of stain crops sent to the VLM per image
 STAIN_MASK_ERODE_PX = 4               # shrink the "exposed surface" mask so object edges don't leak in
 
+VLM_PROVIDER = os.getenv("VLM_PROVIDER", "nvidia").strip().lower()
 
+_VLM_PROVIDER_DEFAULTS = {
+    "nvidia": {
+        "api_key_env": "NVIDIA_API_KEY",
+        "base_url": "https://integrate.api.nvidia.com/v1",
+        "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+        "extra_body": {"chat_template_kwargs": {"enable_thinking": False}},
+        "image_url_format": "nested",
+    },
+    "ollama": {
+        "api_key_env": "OLLAMA_API_KEY",
+        "base_url": "http://localhost:11434/v1",
+        "model": "qwen2.5vl:7b ",
+        "extra_body": {},
+        "image_url_format": "flat",
+    },
+    "huggingface": {
+        "api_key_env": "HF_TOKEN",
+        "base_url": "https://router.huggingface.co/v1",
+        "model": "Qwen/Qwen3.6-35B-A3B",
+        "extra_body": {},
+        "image_url_format": "nested",
+    },
+}
 
-# config/settings.py
-VLM_API_KEY_ENV = "NVIDIA_API_KEY"   # just the NAME of the variable
-VLM_BASE_URL = os.getenv("VLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
-# Must match a published NVIDIA NIM model id. A typo here returns HTTP 404
-# "page not found" from integrate.api.nvidia.com, not a model-not-found JSON.
-VLM_MODEL = os.getenv("VLM_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning")
-# ---- VLM call tuning ----
-VLM_TEMPERATURE = float(os.getenv("VLM_TEMPERATURE", "0.1"))       # structured output -> keep it low
-VLM_INVENTORY_MAX_TOKENS = int(os.getenv("VLM_INVENTORY_MAX_TOKENS", "2000"))
+if VLM_PROVIDER not in _VLM_PROVIDER_DEFAULTS:
+    raise ValueError(
+        f"Unknown VLM_PROVIDER={VLM_PROVIDER!r} - expected one of {list(_VLM_PROVIDER_DEFAULTS)}"
+    )
+
+_vlm_defaults = _VLM_PROVIDER_DEFAULTS[VLM_PROVIDER]
+
+VLM_API_KEY_ENV = os.getenv("VLM_API_KEY_ENV", _vlm_defaults["api_key_env"])
+VLM_BASE_URL = os.getenv("VLM_BASE_URL", _vlm_defaults["base_url"])
+VLM_MODEL = os.getenv("VLM_MODEL", _vlm_defaults["model"])
+VLM_EXTRA_BODY = _vlm_defaults["extra_body"]
+VLM_IMAGE_URL_FORMAT = _vlm_defaults["image_url_format"]
+
+# ---- VLM call tuning (provider-agnostic) ----
+VLM_TEMPERATURE = float(os.getenv("VLM_TEMPERATURE", "0.1"))
+VLM_INVENTORY_MAX_TOKENS = int(os.getenv("VLM_INVENTORY_MAX_TOKENS", "5000"))
 VLM_CONDITION_MAX_TOKENS = int(os.getenv("VLM_CONDITION_MAX_TOKENS", "300"))
-VLM_DEBUG = os.getenv("VLM_DEBUG", "0") == "1"                     # print raw VLM replies
-VLM_MAX_WORKERS = int(os.getenv("VLM_MAX_WORKERS", "4"))         # parallel per-object VLM calls
+VLM_DEBUG = os.getenv("VLM_DEBUG", "0") == "1"
+VLM_MAX_WORKERS = int(os.getenv("VLM_MAX_WORKERS", "4"))

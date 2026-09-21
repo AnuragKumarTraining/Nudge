@@ -1,88 +1,71 @@
 import os
-import base64
 import json
-
+import base64
 from dotenv import load_dotenv
 from openai import OpenAI
 
-
-# ============================================================
-# LOAD .env
-# ============================================================
-
 load_dotenv()
-# ============================================================
-# CONFIG
-# ============================================================
-
-IMAGE_PATH = r"C:\Users\anjishnu.kumbhakar\OneDrive - JK Technosoft Ltd\Desktop\nudge_pipeline\images\daily_2.jpg"
-
-API_KEY = os.getenv("NVIDIA_API_KEY")
-
-BASE_URL = "https://integrate.api.nvidia.com/v1"
-
-MODEL = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning"
-
 
 # ============================================================
-# CHECK API KEY
+# CONFIG (Matching VLMClient setup)
+# ============================================================
+
+IMAGE_PATH = (
+    r"C:\Users\anjishnu.kumbhakar"
+    r"\OneDrive - JK Technosoft Ltd"
+    r"\Desktop\nudge_pipeline"
+    r"\images\daily_2.jpg"
+)
+
+# Hugging Face Access Token
+HF_TOKEN = os.getenv("HF_TOKEN", "YOUR_HF_TOKEN_HERE")
+
+# Hugging Face OpenAI-Compatible Base URL
+VLM_BASE_URL = "https://router.huggingface.co/v1"
+VLM_IMAGE_URL_FORMAT = "nested"  # "nested" for OpenAI/HF standard, "flat" for Ollama
+
+# Model targeted on Hugging Face Hub
+MODEL = "Qwen/Qwen3.6-35B-A3B"
+
+TEMPERATURE = 0.1
+MAX_TOKENS = 4096  # Raised to 4096 to prevent empty responses due to max token limits
+
+# ============================================================
+# HELPER METHODS (Identical to VLMClient)
+# ============================================================
+
+def encode_image_file_to_data_uri(file_path: str) -> str:
+    """Reads image file and returns base64 data URI."""
+    with open(file_path, "rb") as f:
+        image_bytes = f.read()
+    b64 = base64.b64encode(image_bytes).decode("utf-8")
+    return f"data:image/jpeg;base64,{b64}"
+
+def build_image_content(data_uri: str) -> dict:
+    """Matches VLMClient logic for formatting image URLs in OpenAI payloads."""
+    if VLM_IMAGE_URL_FORMAT == "flat":
+        return {"type": "image_url", "image_url": data_uri}
+    return {"type": "image_url", "image_url": {"url": data_uri}}
+
+# ============================================================
+# HEADER & INITIALIZATION
 # ============================================================
 
 print("=" * 80)
-print("NVIDIA NEMOTRON VLM TEST")
+print("OPENAI SDK -> HUGGING FACE ROUTER VLM TEST")
 print("=" * 80)
-
-print("API key found:", bool(API_KEY))
-print("Base URL:", BASE_URL)
+print("Base URL:", VLM_BASE_URL)
 print("Model:", MODEL)
 print("Image:", IMAGE_PATH)
 
-if not API_KEY:
-    raise RuntimeError(
-        "NVIDIA_API_KEY is not set."
-    )
-
-
-# ============================================================
-# LOAD IMAGE
-# ============================================================
-
 if not os.path.exists(IMAGE_PATH):
-    raise FileNotFoundError(
-        f"Image not found:\n{IMAGE_PATH}"
-    )
+    raise FileNotFoundError(f"Image not found:\n{IMAGE_PATH}")
 
-
-with open(IMAGE_PATH, "rb") as f:
-    image_bytes = f.read()
-
-
-# ============================================================
-# BASE64 IMAGE
-# ============================================================
-
-image_b64 = base64.b64encode(
-    image_bytes
-).decode("utf-8")
-
-image_data_uri = (
-    f"data:image/jpeg;base64,{image_b64}"
-)
-
-
-print("Image loaded successfully.")
-print("Image size:", len(image_bytes), "bytes")
-
-
-# ============================================================
-# NVIDIA CLIENT
-# ============================================================
-
+# Initialize OpenAI client targeting Hugging Face Endpoint
 client = OpenAI(
-    api_key=API_KEY,
-    base_url=BASE_URL
+    api_key=HF_TOKEN,
+    base_url=VLM_BASE_URL
 )
-
 
 # ============================================================
 # PROMPT
@@ -90,33 +73,10 @@ client = OpenAI(
 
 prompt = """
 Analyze this image as a visual object discovery task.
-
 Identify ALL distinct visible objects you can find.
 
-Include:
-- furniture
-- people
-- electronics
-- lighting
-- plants
-- decorations
-- tables
-- chairs
-- floor
-- ceiling
-- walls
-- doors
-- windows
-- small objects
-- cafe/table items
-- anything else clearly visible
-
-For every object, provide an approximate bounding box.
-
 Return ONLY valid JSON.
-
 Format:
-
 {
     "objects": [
         {
@@ -126,136 +86,71 @@ Format:
         }
     ]
 }
-
-The bounding box coordinates must be normalized from 0 to 1:
-
-x1 = left
-y1 = top
-x2 = right
-y2 = bottom
-
-Do not return markdown.
-Do not return explanations.
-Return JSON only.
+x1 = left, y1 = top, x2 = right, y2 = bottom (normalized 0 to 1).
+Do not return markdown or explanations. Return JSON only.
 """
 
-
 # ============================================================
-# CALL MODEL
+# CALL MODEL VIA OPENAI CLIENT
 # ============================================================
 
-print("\nCalling NVIDIA model...")
+data_uri = encode_image_file_to_data_uri(IMAGE_PATH)
+image_content_block = build_image_content(data_uri)
+
+print("\nSending request via OpenAI Client...")
 print("-" * 80)
 
 try:
-
     response = client.chat.completions.create(
-
         model=MODEL,
-
         messages=[
             {
                 "role": "user",
                 "content": [
-
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": image_data_uri
-                        }
-                    },
-
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-
-                ]
+                    {"type": "text", "text": prompt},
+                    image_content_block,
+                ],
             }
         ],
-
-        temperature=0.1,
-
-        max_tokens=2000,
-
-        extra_body={
-            "chat_template_kwargs": {
-                "enable_thinking": False
-            }
-        }
+        temperature=TEMPERATURE,
+        max_tokens=MAX_TOKENS,
+        response_format={"type": "json_object"}
     )
 
+    choice = response.choices[0]
+    finish_reason = choice.finish_reason
+
+    if finish_reason == "length":
+        print("⚠️ Warning: Model response truncated due to max_tokens limit!")
+
+    content = choice.message.content or ""
+
 except Exception as e:
-
-    print("\n" + "=" * 80)
-    print("NVIDIA API CALL FAILED")
-    print("=" * 80)
-
-    print("Error type:")
-    print(type(e).__name__)
-
-    print("\nError:")
-    print(str(e))
-
-    raise
-
+    print("\nAPI CALL FAILED:", type(e).__name__, "-", e)
+    raise e
 
 # ============================================================
-# RAW RESPONSE
+# JSON PARSING & DISPLAY
 # ============================================================
-
-print("\n" + "=" * 80)
-print("NVIDIA API CALL SUCCESSFUL")
-print("=" * 80)
-
-print("Model returned:")
-print(response.model)
-
-print("\nFinish reason:")
-print(response.choices[0].finish_reason)
-
-
-# ============================================================
-# CONTENT
-# ============================================================
-
-content = response.choices[0].message.content
 
 print("\n" + "=" * 80)
 print("RAW MODEL CONTENT")
 print("=" * 80)
-
 print(content)
 
-
-# ============================================================
-# TRY JSON PARSING
-# ============================================================
-
-print("\n" + "=" * 80)
-print("JSON PARSING")
-print("=" * 80)
-
 try:
+    if not content.strip():
+        raise ValueError("Model returned an empty text string.")
 
     result = json.loads(content)
-
-    print("JSON parsing: SUCCESS")
-
     objects = result.get("objects", [])
 
-    print("Objects returned:", len(objects))
+    print("\n" + "=" * 80)
+    print(f"OBJECTS DETECTED: {len(objects)}")
+    print("=" * 80)
 
     for i, obj in enumerate(objects, 1):
-
-        print(
-            f"{i:03d}. "
-            f"{obj.get('class', 'unknown')} "
-            f"{obj.get('bbox_normalized', [])}"
-        )
+        print(f"{i:03d}. {obj.get('class', 'unknown')} {obj.get('bbox_normalized', [])}")
 
 except Exception as e:
-
-    print("JSON parsing: FAILED")
-    print(type(e).__name__)
-    print(str(e))
+    print("\nParsing Error:", type(e).__name__, "-", e)
