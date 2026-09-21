@@ -156,6 +156,8 @@ class VLMClient:
             print(f"VLM request failed ({VLM_PROVIDER}:{VLM_MODEL} @ {VLM_BASE_URL}): {exc}")
             return None
 
+        # print("coming response: ",response)
+
         choice = response.choices[0]
         content = (choice.message.content or "").strip()
         
@@ -187,17 +189,50 @@ class VLMClient:
         print(f"[VLM] Max tokens: {VLM_INVENTORY_MAX_TOKENS}")
         print("[VLM] Sending image + inventory prompt...")
 
+        # prompt = (
+        #     "You are inspecting a cafe photo. List every distinct object or fixture you can "
+        #     " Include small items (spoons, forks, napkins, menu cards, "
+        #     "condiment holders, flowers, decor), room elements (floor, walls, ceiling, "
+        #     "windows, doors) and equipment (lights, fans, AC, bins).\n"
+        #     "CRITICAL INSTRUCTION: DO NOT output any thinking, reasoning, or explanations. "
+        #     "Reply with a JSON OBJECT ONLY, no prose:\n"
+        #     '{"objects": [{"class": "spoon", "count": 3, "bbox_normalized": [x1, y1, x2, y2]}]}\n'
+        #     "bbox_normalized = fractions of image width/height between 0 and 1 "
+        #     "(x1,y1 = top-left, x2,y2 = bottom-right). Best effort is fine."
+        # )
+
         prompt = (
-            "You are inspecting a cafe photo. List every distinct object or fixture you can "
-            "see that is NOT in this already-detected list: "
-            f"[{known_summary}]. Include small items (spoons, forks, napkins, menu cards, "
-            "condiment holders, flowers, decor), room elements (floor, walls, ceiling, "
-            "windows, doors) and equipment (lights, fans, AC, bins).\n"
-            "CRITICAL INSTRUCTION: DO NOT output any thinking, reasoning, or explanations. "
-            "Reply with a JSON OBJECT ONLY, no prose:\n"
-            '{"objects": [{"class": "spoon", "count": 3, "bbox_normalized": [x1, y1, x2, y2]}]}\n'
-            "bbox_normalized = fractions of image width/height between 0 and 1 "
-            "(x1,y1 = top-left, x2,y2 = bottom-right). Best effort is fine."
+            "You are a meticulous visual inspector examining a photo. "
+            "Your task is to find every objects, you can check .\n\n"
+     
+            "LOOK CAREFULLY FOR THESE CATEGORIES, IN THIS ORDER:\n"
+            "1. Small items, accessories, and tools (e.g., utensils, toiletries, stationery, kitchenware, loose objects).\n"
+            "2. Decor and furnishings (e.g., plants, artwork, mirrors, rugs, curtains, small furniture).\n"
+            "3. Room structure and fixed elements (e.g., floor, wall, ceiling, window, door, counters, cabinetry, shelving).\n"
+            "4. Equipment, appliances, and fixtures (e.g., lighting, HVAC, electronics, plumbing fixtures, bins, outlets).\n"
+            "5. People and personal belongings (only if clearly visible: person, bags, clothing items, phones).\n\n"
+            "STRICT RULES - FOLLOW EXACTLY:\n"
+            "- Only report an object if you can actually see it in the image. Never guess or "
+            "assume an object exists based on the setting.\n"
+            "- If you are not confident an object is what you think it is, SKIP it rather than "
+            "guessing. A missed object is a smaller problem than a wrong label.\n"
+            "- Do not report the same physical object twice under different names.\n"
+            "- Do not report objects that are already in the OBJECTS ALREADY DETECTED list above.\n"
+            "- Use short, singular, lowercase class names (e.g., 'spoon', not 'Spoons' or 'a silver spoon').\n"
+            "- Group identical adjacent items together with a count instead of listing each one "
+            "separately. For example, one entry with class 'chair', count 4, and a bbox_normalized "
+            "covering their combined area, UNLESS they are spread across clearly different areas "
+            "of the photo, in which case list them as separate entries.\n"
+            "- bbox_normalized must be [x1, y1, x2, y2] as fractions of image width and height, "
+            "each between 0 and 1, where x1,y1 is the top-left corner and x2,y2 is the "
+            "bottom-right corner of the object as it actually appears, not a guess at its full "
+            "extent if partially hidden.\n"
+            "- Do not include any thinking, reasoning, explanation, or markdown formatting of any "
+            "kind. Output nothing before the opening brace or after the closing brace.\n\n"
+            "Reply with a JSON object in EXACTLY this shape and nothing else:\n"
+            '{"objects": [{"class": "spoon", "count": 3, "bbox_normalized": [0.12, 0.55, 0.34, 0.61]}]}\n'
+            "If you find no additional objects beyond the already-detected list, reply with "
+            '{"objects": []}.'
         )
         
         text = self._ask(full_image, prompt, max_tokens=VLM_INVENTORY_MAX_TOKENS, json_mode=True)
@@ -205,7 +240,7 @@ class VLMClient:
         if text is None:
             print("[VLM] ❌ No text returned from model (falling back to empty inventory)")
             return []
-        print("respinse",text)
+        # print("respinse",text)
             
         data = _extract_json(text, "{")
         items = data.get("objects") if isinstance(data, dict) else None

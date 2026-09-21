@@ -346,8 +346,10 @@ _VLM_PROVIDER_DEFAULTS = {
     "huggingface": {
         "api_key_env": "HF_TOKEN",
         "base_url": "https://router.huggingface.co/v1",
-        "model": "Qwen/Qwen3.6-35B-A3B",
-        "extra_body": {},
+        "model": "deepseek-ai/DeepSeek-V4-Flash-Vision-Exp",
+        "extra_body": {"chat_template_kwargs": {
+            "enable_thinking": False
+        }},
         "image_url_format": "nested",
     },
 }
