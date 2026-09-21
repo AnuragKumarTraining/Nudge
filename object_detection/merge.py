@@ -1,16 +1,18 @@
+
 """
-3-way merge + dedup of the discovery branches (YOLOv8, YOLO-World, VLM inventory),
+3-way merge + dedup of the discovery branches (YOLOv8, YOLO-World, VLM + Grounding),
 plus the merged object counts.
-Rules (in priority order):
-  1. Two detections are the same object if their CANONICAL class names match
-     (CLASS_SYNONYMS, so "potted plant" == "plant") and their boxes overlap (IoU).
-  2. Geometry comes from the most precise source: YOLO > YOLO-World > VLM. A VLM box
-     never overwrites a YOLO/YOLO-World box.
-  3. Nothing is silently lost: every merged object keeps `sources` (which branches
-     saw it), so "seen by 2-3 branches" can be used later as a confidence signal.
 """
 from config.settings import CLASS_SYNONYMS
-_PRECISION = {"yolo": 1, "yolo_world": 2, "vlm_inventory": 3}
+
+# <--- 1. UPDATED PRECISION HIERARCHY
+# YOLO (fine-tuned) > Grounding DINO / YOLO-World > Raw VLM box fallback
+_PRECISION = {
+    "yolo": 4,
+    "yolo_world": 3,
+    "vlm_grounded": 3,    # Grounding DINO accuracy is on par with YOLO-World
+    "vlm_inventory": 1,   # Raw VLM generated boxes (low precision)
+}
 
 def calculate_iou(box_a, box_b):
     ix1, iy1 = max(box_a["x1"], box_b["x1"]), max(box_a["y1"], box_b["y1"])
@@ -52,7 +54,6 @@ def merge_detections(standard_objects, open_vocab_objects, vlm_inventory=None, i
         best, best_iou = None, 0.0
 
         for existing in merged:
-            # synonym-aware: "dining table" (YOLO) == "table" (YOLO-World)
             if cand_class != _canonical(existing["class"]):
                 continue
 
@@ -68,15 +69,12 @@ def merge_detections(standard_objects, open_vocab_objects, vlm_inventory=None, i
     return merged
 
 def count_objects(objects: list[dict]) -> dict[str, int]:
-    """
-    Counts over the MERGED inventory (the old code reported YOLO-only counts, so
-    everything YOLO-World / the VLM found was missing from `object_counts`).
-    A VLM entry may stand for several instances ("reported_count") when the VLM
-    could only give one loose box for a group, e.g. "6 spoons".
-    """
     counts: dict[str, int] = {}
     for o in objects:
-        name = _canonical(o["class"])            # "dining table" and "table" count together
-        n = max(1, int(o.get("reported_count", 1))) if o.get("source") == "vlm_inventory" else 1
+        name = _canonical(o["class"])
+        # <--- 2. UPDATED SOURCE CHECK FOR vlm_grounded
+        src = o.get("source")
+        is_vlm_source = src in ("vlm_inventory", "vlm_grounded")
+        n = max(1, int(o.get("reported_count", 1))) if is_vlm_source else 1
         counts[name] = counts.get(name, 0) + n
     return dict(sorted(counts.items()))

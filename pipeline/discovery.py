@@ -1,19 +1,8 @@
 """
-STAGE A - OBJECT DISCOVERY  (hybrid: YOLOv8 + YOLO-World + VLM inventory)
+STAGE A - OBJECT DISCOVERY  (hybrid: YOLOv8 + YOLO-World + VLM + Grounding)
 
-Input : ONE pre-processed image (+ capture metadata)      <- no master / reference image
+Input : ONE pre-processed image (+ capture metadata)        <- no master / reference image
 Output: {out_dir}/{capture_id}_object_discovery.json      <- the artifact Stage B consumes
-
-Answers only "what is in the photo, where, and how is it arranged".
-It never judges condition, cleanliness or stains - that is Stage B.
-
-    image ─┬─► YOLOv8      (COCO objects)      ─┐
-           ├─► YOLO-World  (open-vocab objects) ├─► 3-way merge + dedup ─► inventory
-           └─► VLM         (gap-filling list)  ─┘
-                                                  │
-                                                  ├─► bboxes
-                                                  ├─► polygons (+ orientation)
-                                                  └─► relationships
 """
 import numpy as np
 
@@ -21,6 +10,7 @@ from config.settings import YOLO_WORLD_CLASSES, OUTPUT_DIR
 from core.artifacts import save_artifact
 from models.yolo_loader import load_yolo
 from models.vlm_client import VLMClient
+from models.grounding_service import GroundingService  # <--- 1. NEW IMPORT
 from object_detection.detector import detect_objects, detect_open_vocabulary_objects
 from object_detection.vlm_inventory import detect_vlm_inventory
 from object_detection.merge import merge_detections, count_objects
@@ -30,11 +20,19 @@ from object_detection.relationships import compute_relationships
 
 def run_object_discovery(image: np.ndarray, capture_metadata: dict,
                          vlm_client: VLMClient | None = None,
+                         grounding_service: GroundingService | None = None,  # <--- 2. NEW PARAMETER
                          image_path: str | None = None,
                          preprocessing: dict | None = None,
                          out_dir: str = OUTPUT_DIR) -> dict:
     img_h, img_w = image.shape[:2]
     vlm_client = vlm_client or VLMClient()
+    
+    # Lazy-load grounding service if not passed in
+    if grounding_service is None and vlm_client.is_configured:
+        try:
+            grounding_service = GroundingService()
+        except Exception as exc:
+            print(f"[DISCOVERY] ⚠️ Could not initialize GroundingService: {exc}")
 
     # ---- Branch 1: YOLOv8 (COCO) ----
     detection = detect_objects(image, load_yolo())
@@ -43,8 +41,14 @@ def run_object_discovery(image: np.ndarray, capture_metadata: dict,
     # ---- Branch 2: YOLO-World (open vocabulary) ----
     open_vocab_objects = detect_open_vocabulary_objects(image, YOLO_WORLD_CLASSES)
 
-    # ---- Branch 3: VLM inventory (told what is already found, so it fills GAPS only) ----
-    vlm_inventory = detect_vlm_inventory(image, standard_objects + open_vocab_objects, vlm_client)
+    # ---- Branch 3: VLM inventory + Grounding DINO ----
+    # <--- 3. PASS grounding_service HERE
+    vlm_inventory = detect_vlm_inventory(
+        image, 
+        standard_objects + open_vocab_objects, 
+        vlm_client,
+        grounding_service
+    )
 
     # ---- 3-way merge + dedup -> COMPLETE OBJECT INVENTORY ----
     objects = merge_detections(standard_objects, open_vocab_objects, vlm_inventory)

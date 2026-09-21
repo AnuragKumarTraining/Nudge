@@ -15,6 +15,7 @@ from core.artifacts import load_artifact, save_artifact
 from models.vlm_client import VLMClient
 from pipeline.discovery import run_object_discovery
 from pipeline.condition_analysis import run_condition_analysis
+from models.grounding_service import GroundingService
 
 
 
@@ -25,11 +26,19 @@ def _read_image(image_path: str):
     return image
 
 
-def _final_json(capture_metadata: dict, discovery: dict, condition: dict, vlm_client: VLMClient) -> dict:
+def _final_json(capture_metadata: dict, discovery: dict, condition: dict, vlm_client: VLMClient, grounding_service: GroundingService | None = None) -> dict:
+    if vlm_client.is_configured and grounding_service and grounding_service.is_available:
+        extractor = "hybrid_yolo_yoloworld_vlm_grounding_opencv"
+    elif vlm_client.is_configured:
+        extractor = "hybrid_yolo_yoloworld_vlm_opencv"
+    else:
+        extractor = "yolo_yoloworld_opencv_only"
+
     return {
         "capture_id": capture_metadata.get("capture_id"),
         "master_reference_id": capture_metadata.get("master_reference_id"),
         "status": "processed",
+        "extractor_used": extractor,
         "preprocessing": discovery["preprocessing"],
         "extractor_used": ("hybrid_yolo_yoloworld_vlm_opencv" if vlm_client.is_configured
                            else "yolo_yoloworld_opencv_only"),
@@ -45,7 +54,7 @@ def _final_json(capture_metadata: dict, discovery: dict, condition: dict, vlm_cl
         },
     }
 
-
+'''
 def run_stage3_pipeline(image_path: str, capture_metadata: dict,
                         out_dir: str = OUTPUT_DIR) -> dict:
     vlm_client = VLMClient()       # one instance shared by both stages
@@ -61,6 +70,36 @@ def run_stage3_pipeline(image_path: str, capture_metadata: dict,
     condition = {}
 
     final = _final_json(capture_metadata, discovery, condition, vlm_client)
+    save_artifact(out_dir, final["capture_id"], "final", final)
+    return final
+'''
+
+def run_stage3_pipeline(image_path: str, capture_metadata: dict,
+                        out_dir: str = OUTPUT_DIR) -> dict:
+    # <--- 4. INSTANTIATE MODELS ONCE AT PIPELINE LEVEL
+    vlm_client = VLMClient()
+    grounding_service = None
+    try:
+        grounding_service = GroundingService()
+    except Exception as e:
+        print(f"[PIPELINE] ⚠️ GroundingService unavailable, running without spatial grounding: {e}")
+
+    image = _read_image(image_path)
+
+    # ---- STAGE A: object discovery (writes <capture_id>_object_discovery.json) ----
+    discovery = run_object_discovery(
+        image, 
+        capture_metadata, 
+        vlm_client=vlm_client,
+        grounding_service=grounding_service,  # <--- PASS SHARED INSTANCE
+        image_path=image_path, 
+        out_dir=out_dir
+    )
+
+    # ---- STAGE B: condition / cleanliness / stains (writes <capture_id>_condition_analysis.json) ----
+    condition = run_condition_analysis(image, discovery["objects"], capture_metadata, vlm_client, out_dir)
+
+    final = _final_json(capture_metadata, discovery, condition, vlm_client, grounding_service)
     save_artifact(out_dir, final["capture_id"], "final", final)
     return final
 

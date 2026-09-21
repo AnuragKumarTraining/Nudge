@@ -4,3 +4,7 @@ ultralytics
 openai
 python-dotenv
 huggingface_hub
+torch
+torchvision 
+transformers 
+pillow

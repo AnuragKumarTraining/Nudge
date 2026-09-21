@@ -171,3 +171,95 @@ should ever require touching more than 2-3 files to add one feature.
   not yet persist a `FeatureBundle` to a database or diff against a stored
   master. That's the `storage/` and `comparison/` layers from the earlier
   architecture discussion — not built here yet.
+
+
+extra code
+
+```python
+'''
+    def get_scene_inventory(self, full_image: np.ndarray, known_summary: str) -> list[dict]:
+        if self._client is None:
+            print("[VLM] ❌ get_scene_inventory(): client is not configured")
+            return []
+
+        h, w = full_image.shape[:2]
+        print("\n" + "=" * 70)
+        print("[VLM] SCENE INVENTORY REQUEST")
+        print("=" * 70)
+        print(f"[VLM] Model: {VLM_MODEL}")
+        print(f"[VLM] Endpoint: {VLM_BASE_URL}")
+        print(f"[VLM] Image: {w}x{h}")
+        print(f"[VLM] Known objects: {known_summary}")
+        print(f"[VLM] Max tokens: {VLM_INVENTORY_MAX_TOKENS}")
+        print("[VLM] Sending image + inventory prompt...")
+
+
+        prompt = (
+            "You are a meticulous visual inspector examining a photo. "
+            "Your task is to find every objects, you can check .\n\n"
+     
+            "LOOK CAREFULLY FOR THESE CATEGORIES, IN THIS ORDER:\n"
+            "1. Small items, accessories, and tools (e.g., utensils, toiletries, stationery, kitchenware, loose objects).\n"
+            "2. Decor and furnishings (e.g., plants, artwork, mirrors, rugs, curtains, small furniture).\n"
+            "3. Room structure and fixed elements (e.g., floor, wall, ceiling, window, door, counters, cabinetry, shelving).\n"
+            "4. Equipment, appliances, and fixtures (e.g., lighting, HVAC, electronics, plumbing fixtures, bins, outlets).\n"
+            "5. People and personal belongings (only if clearly visible: person, bags, clothing items, phones).\n\n"
+            "STRICT RULES - FOLLOW EXACTLY:\n"
+            "- Only report an object if you can actually see it in the image. Never guess or "
+            "assume an object exists based on the setting.\n"
+            "- If you are not confident an object is what you think it is, SKIP it rather than "
+            "guessing. A missed object is a smaller problem than a wrong label.\n"
+            "- Do not report the same physical object twice under different names.\n"
+            "- Do not report objects that are already in the OBJECTS ALREADY DETECTED list above.\n"
+            "- Use short, singular, lowercase class names (e.g., 'spoon', not 'Spoons' or 'a silver spoon').\n"
+            "- Group identical adjacent items together with a count instead of listing each one "
+            "separately. For example, one entry with class 'chair', count 4, and a bbox_normalized "
+            "covering their combined area, UNLESS they are spread across clearly different areas "
+            "of the photo, in which case list them as separate entries.\n"
+            "- bbox_normalized must be [x1, y1, x2, y2] as fractions of image width and height, "
+            "each between 0 and 1, where x1,y1 is the top-left corner and x2,y2 is the "
+            "bottom-right corner of the object as it actually appears, not a guess at its full "
+            "extent if partially hidden.\n"
+            "- Do not include any thinking, reasoning, explanation, or markdown formatting of any "
+            "kind. Output nothing before the opening brace or after the closing brace.\n\n"
+            "Reply with a JSON object in EXACTLY this shape and nothing else:\n"
+            '{"objects": [{"class": "spoon", "count": 3, "bbox_normalized": [0.12, 0.55, 0.34, 0.61]}]}\n'
+            "If you find no additional objects beyond the already-detected list, reply with "
+            '{"objects": []}.'
+        )
+        
+        text = self._ask(full_image, prompt, max_tokens=VLM_INVENTORY_MAX_TOKENS, json_mode=True)
+
+        if text is None:
+            print("[VLM] ❌ No text returned from model (falling back to empty inventory)")
+            return []
+        # print("respinse",text)
+            
+        data = _extract_json(text, "{")
+        items = data.get("objects") if isinstance(data, dict) else None
+        
+        if not isinstance(items, list):
+            print("[VLM] inventory reply had no 'objects' list (falling back to empty inventory)")
+            return []
+
+        inventory, dropped = [], 0
+        for item in items:
+            try:
+                box = _to_unit_bbox(item["bbox_normalized"], w, h)
+                if box is None:
+                    dropped += 1
+                    continue
+                inventory.append({
+                    "class": str(item["class"]).strip().lower(),
+                    "count": max(1, int(item.get("count", 1))),
+                    "bbox_normalized": box,
+                })
+            except (KeyError, TypeError, ValueError):
+                dropped += 1
+
+        if VLM_DEBUG or dropped:
+            print(f"[VLM] inventory: kept {len(inventory)}, dropped {dropped} malformed entries")
+
+        return inventory
+'''
+```
