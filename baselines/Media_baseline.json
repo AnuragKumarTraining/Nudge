@@ -1,0 +1,149 @@
+{
+    "image_shape": [
+        1029,
+        2285
+    ],
+    "brightness": 125.09,
+    "objects": [
+        {
+            "label": "person",
+            "bbox": [
+                1720.18,
+                90.63,
+                2285.0,
+                769.37
+            ],
+            "centroid": [
+                2002,
+                430
+            ],
+            "confidence": 0.92
+        },
+        {
+            "label": "person",
+            "bbox": [
+                835.71,
+                0.77,
+                1723.47,
+                746.14
+            ],
+            "centroid": [
+                1279,
+                373
+            ],
+            "confidence": 0.89
+        },
+        {
+            "label": "bottle",
+            "bbox": [
+                1849.14,
+                422.58,
+                2129.73,
+                1001.4
+            ],
+            "centroid": [
+                1989,
+                711
+            ],
+            "confidence": 0.76
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                681.09,
+                184.82,
+                909.32,
+                729.46
+            ],
+            "centroid": [
+                795,
+                457
+            ],
+            "confidence": 0.69
+        },
+        {
+            "label": "potted plant",
+            "bbox": [
+                1.38,
+                304.37,
+                563.2,
+                750.34
+            ],
+            "centroid": [
+                282,
+                527
+            ],
+            "confidence": 0.66
+        },
+        {
+            "label": "potted plant",
+            "bbox": [
+                362.84,
+                52.18,
+                595.15,
+                195.09
+            ],
+            "centroid": [
+                478,
+                123
+            ],
+            "confidence": 0.61
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                968.04,
+                640.95,
+                1872.65,
+                1021.39
+            ],
+            "centroid": [
+                1420,
+                831
+            ],
+            "confidence": 0.38
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                1798.35,
+                232.35,
+                1952.76,
+                299.46
+            ],
+            "centroid": [
+                1875,
+                265
+            ],
+            "confidence": 0.36
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                838.97,
+                199.66,
+                1152.69,
+                726.06
+            ],
+            "centroid": [
+                995,
+                462
+            ],
+            "confidence": 0.33
+        },
+        {
+            "label": "dining table",
+            "bbox": [
+                4.19,
+                705.7,
+                1727.49,
+                1028.33
+            ],
+            "centroid": [
+                865,
+                867
+            ],
+            "confidence": 0.32
+        }
+    ]
+}
