@@ -52,4 +52,18 @@ def run(ctx: PipelineContext) -> bool:
         for item in set(ctx.clutter_items):
             print(f"[CLUTTER] Remove {ctx.clutter_items.count(item)} x {item}")
 
+    # --- BULB STATUS CHECKLIST ---
+    current_bulbs = getattr(ctx, "current_bulb_count", None)
+    baseline_bulbs = getattr(ctx, "baseline_bulb_count", None)
+
+    if current_bulbs is not None and baseline_bulbs is not None:
+        if current_bulbs == baseline_bulbs:
+            print(f"[OK] Bulb status verified: All {current_bulbs} expected light(s) are active.")
+        elif current_bulbs < baseline_bulbs:
+            turned_off = baseline_bulbs - current_bulbs
+            print(f"[LIGHTS OFF] {turned_off} expected light source(s) appear inactive or turned off.")
+        else:
+            extra = current_bulbs - baseline_bulbs
+            print(f"[EXTRA LIGHTS] {extra} unexpected active light source(s) detected.")
+
     return True

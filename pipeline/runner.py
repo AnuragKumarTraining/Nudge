@@ -5,6 +5,7 @@ from pipeline import (
     step1_alignment,
     step2_feature_extraction,
     step3_ssim_lighting,
+    step3b_bulb_detection,  # <-- Added
     step4_delta_checklist,
     step5_vlm_inspection,
 )
@@ -20,6 +21,7 @@ class PipelineRunner:
             step1_alignment,
             step2_feature_extraction,
             step3_ssim_lighting,
+            step3b_bulb_detection,  # <-- Registered
             step4_delta_checklist,
             step5_vlm_inspection,
         ]
