@@ -8,7 +8,7 @@ class BulbDetector:
     def __init__(self, model_id="openai/clip-vit-large-patch14-336"):
         self.vlm = VLMClassifier(model_id=model_id)
 
-    def detect_bulbs(self, frame, threshold_value=225, min_area=30, pad_pixels=35):
+    def detect_bulbs(self, frame, threshold_value=210, min_area=15, pad_pixels=40):
         """
         Executes candidate extraction + zero-shot CLIP classification.
         Returns:
