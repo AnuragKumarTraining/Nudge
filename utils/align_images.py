@@ -3,7 +3,7 @@ import numpy as np
 
 """using ORB"""
 
-def align_images(master_img, daily_img, max_feature = 5000, match_ratio=0.75, ransac_thres=0.5):
+def align_images(master_img, daily_img, max_feature = 5000, match_ratio=0.75, ransac_thres=0.3):
     master_grey = cv2.cvtColor(master_img, cv2.COLOR_BGR2GRAY)
     daily_grey = cv2.cvtColor(daily_img, cv2.COLOR_BGR2GRAY)
 
@@ -18,13 +18,17 @@ def align_images(master_img, daily_img, max_feature = 5000, match_ratio=0.75, ra
     # match the feature brute force with Hamming distance
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
     matches = bf.knnMatch(descriptors_daily, descriptors_master, k=2)
+    print("daily keypoints:", len(keypoints_daily))
+    print("master keypoints:", len(keypoints_master))
+    print("knn matches:", len(matches))
 
     good_matches = []
     for m, n in matches:
         if m.distance < match_ratio * n.distance:
             good_matches.append(m)
 
-    if len(good_matches) < 20:
+    if len(good_matches) < 5:
+        print(len(good_matches))
         raise ValueError(f"Alignment failed: Only {len(good_matches)} valid features found. Prompt worker to retake photo.")
 
     points_daily = np.float32([keypoints_daily[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
@@ -40,9 +44,8 @@ def align_images(master_img, daily_img, max_feature = 5000, match_ratio=0.75, ra
 
     return aligned_img
 
-    
 
 
 
 
-   
+

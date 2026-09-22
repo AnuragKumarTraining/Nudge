@@ -1,0 +1,31 @@
+{
+    "image_shape": [
+        1293,
+        1724
+    ],
+    "brightness": 126.23,
+    "objects": [],
+    "bulb_count": 2,
+    "bulbs": [
+        {
+            "id": 1,
+            "confidence": 0.9656,
+            "bbox": [
+                1286,
+                430,
+                1459,
+                588
+            ]
+        },
+        {
+            "id": 2,
+            "confidence": 0.9894,
+            "bbox": [
+                323,
+                337,
+                515,
+                514
+            ]
+        }
+    ]
+}

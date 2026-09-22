@@ -16,8 +16,31 @@ from pipeline.runner import PipelineRunner
 
 def resolve_room_name(file_path: str, root_dir: str) -> str | None:
     rel_path = os.path.relpath(file_path, root_dir)
-    parts = rel_path.split(os.sep)
-    return parts[0] if len(parts) > 1 else identify_room(file_path)
+    parts = [p for p in rel_path.split(os.sep) if p]
+
+    # 1) Prefer explicit folder names first
+    if len(parts) > 1:
+        room_name = parts[0].strip()
+        if room_name:
+            return room_name
+
+    # 2) If it is a direct file like Bathroom.jpg, use the filename before feature matching
+    file_stem = os.path.splitext(os.path.basename(file_path))[0]
+    normalized_file = "".join(ch.lower() for ch in file_stem if ch.isalnum())
+
+    if os.path.isdir(BASELINES_DIR):
+        for name in os.listdir(BASELINES_DIR):
+            if not name.lower().endswith("_baseline.json"):
+                continue
+
+            room_name = name[:-len("_baseline.json")]
+            normalized_room = "".join(ch.lower() for ch in room_name if ch.isalnum())
+
+            if normalized_file == normalized_room:
+                return room_name
+
+    # 3) Fallback to the old visual matcher only if no filename match is found
+    return identify_room(file_path)
 
 def process_single_image(img_path: str, model=None, runner=None) -> PipelineContext | None:
     if not os.path.exists(img_path):
