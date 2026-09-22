@@ -24,5 +24,4 @@ def generate_all_baselines():
         with open(json_out, "w") as f:
             json.dump(data, f, indent=4)
         print(f"[SUCCESS] Baseline created for {room_name}")
-    
 generate_all_baselines()

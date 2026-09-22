@@ -33,3 +33,8 @@ bulb_report.json
 .idea/
 .DS_Store
 Thumbs.db
+yolov8n.pt
+utils\__pycache__
+__pycache__
+.env
+Ultralytics/

@@ -1,0 +1,37 @@
+{
+    "image_shape": [
+        148,
+        258
+    ],
+    "brightness": 90.44,
+    "objects": [
+        {
+            "label": "bottle",
+            "bbox": [
+                142.61,
+                0.54,
+                195.48,
+                95.87
+            ],
+            "centroid": [
+                169,
+                48
+            ],
+            "confidence": 0.47
+        },
+        {
+            "label": "wine glass",
+            "bbox": [
+                142.24,
+                0.88,
+                196.67,
+                96.18
+            ],
+            "centroid": [
+                169,
+                48
+            ],
+            "confidence": 0.38
+        }
+    ]
+}

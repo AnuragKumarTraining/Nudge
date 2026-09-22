@@ -1,125 +1,102 @@
-import os
-import json
-import math
-import cv2
-from skimage.metrics import structural_similarity as ssim
-from utils.model import load_yolo
-from utils.features import extract_features
-from utils.align_images import align_images
-from utils.matcher import identify_room
-from config.inference_config import *
+from __future__ import annotations
+import warnings
+warnings.filterwarnings("ignore")
 
-def resolve_room_name(file_path, root_dir):
+import os
+import sys
+import json
+import cv2
+
+from utils.model import load_yolo
+from utils.matcher import identify_room
+from config.inference_config import CURRENT_DIR, BASELINES_DIR, VALID_EXTENSIONS
+from pipeline_helper.context import PipelineContext
+from pipeline_helper.selector import select_image_dialog
+from pipeline.runner import PipelineRunner
+
+def resolve_room_name(file_path: str, root_dir: str) -> str | None:
     rel_path = os.path.relpath(file_path, root_dir)
     parts = rel_path.split(os.sep)
     return parts[0] if len(parts) > 1 else identify_room(file_path)
 
-def process_uploaded_images():
-    model = load_yolo()
-    
-    for root, _, files in os.walk(CURRENT_DIR):
-        for f in files:
-            if not f.lower().endswith(VALID_EXTENSIONS):
-                continue
-                
-            img_path = os.path.join(root, f)
-            room_name = resolve_room_name(img_path, CURRENT_DIR)
+def process_single_image(img_path: str, model=None, runner=None) -> PipelineContext | None:
+    if not os.path.exists(img_path):
+        print(f"[ERROR] Specified image file '{img_path}' does not exist.")
+        return None
 
-            if not room_name:
-                print(f"[SKIP] Could not identify room space for '{img_path}'.")
-                continue
+    if model is None:
+        model = load_yolo()
 
-            json_path = os.path.join(BASELINES_DIR, f"{room_name}_baseline.json")
-            ref_img_path = os.path.join(BASELINES_DIR, f"{room_name}_ref.jpg")
+    if runner is None:
+        runner = PipelineRunner()
 
-            if not os.path.exists(json_path) or not os.path.exists(ref_img_path):
-                print(f"[SKIP] Missing baseline files for room '{room_name}'.")
-                continue
+    filename = os.path.basename(img_path)
+    room_name = resolve_room_name(img_path, CURRENT_DIR)
 
-            with open(json_path, "r") as f_json:
-                master_data = json.load(f_json)
+    if not room_name:
+        print(f"[SKIP] Could not identify room space for '{img_path}'.")
+        return None
 
-            master_img = cv2.imread(ref_img_path)
-            raw_current_img = cv2.imread(img_path)
+    json_path = os.path.join(BASELINES_DIR, f"{room_name}_baseline.json")
+    ref_img_path = os.path.join(BASELINES_DIR, f"{room_name}_ref.jpg")
 
-            print(f"\n ROOM DELTA REPORT: {room_name.upper()} ({f})")
+    if not os.path.exists(json_path) or not os.path.exists(ref_img_path):
+        print(f"[SKIP] Missing baseline files for room '{room_name}'.")
+        return None
 
-            # STEP 1: ALIGNMENT & HOMOGRAPHY WARP
+    with open(json_path, "r", encoding="utf-8") as f_json:
+        master_data = json.load(f_json)
 
-            try:
-                aligned_current_img = align_images(master_img, raw_current_img)
-                print("[PASS] Homography Alignment Successful (Image perspective rectified).")
-            except ValueError as e:
-                print(f"[REJECT] {e}")
-                continue  # Stopped processing if alignment is beyond match limit
+    master_img = cv2.imread(ref_img_path)
+    raw_current_img = cv2.imread(img_path)
 
-            # Save temporary aligned image for YOLO feature extraction
-            temp_aligned_path = "temp_aligned.jpg"
-            cv2.imwrite(temp_aligned_path, aligned_current_img)
+    if raw_current_img is None:
+        print(f"[ERROR] Could not read image file '{img_path}'.")
+        return None
 
-            # STEP 2: FEATURE EXTRACTION ON ALIGNED IMAGE
+    print(f"\n ROOM DELTA REPORT: {room_name.upper()} ({filename})")
 
-            current_data, _ = extract_features(temp_aligned_path, model)
-            if os.path.exists(temp_aligned_path):
-                os.remove(temp_aligned_path)
+    ctx = PipelineContext(
+        img_path=img_path,
+        filename=filename,
+        room_name=room_name,
+        master_img=master_img,
+        raw_current_img=raw_current_img,
+        master_data=master_data,
+        model=model,
+    )
 
-            # STEP 3: SSIM & LIGHTING DELTA
+    return runner.run(ctx)
 
-            master_gray = cv2.cvtColor(cv2.resize(master_img, (640, 480)), cv2.COLOR_BGR2GRAY)
-            aligned_gray = cv2.cvtColor(cv2.resize(aligned_current_img, (640, 480)), cv2.COLOR_BGR2GRAY)
-            
-            ssim_score = ssim(master_gray, aligned_gray)
-            brightness_diff = current_data["brightness"] - master_data["brightness"]
+def process_uploaded_images(target_path: str | None = None):
+    """Entry point to process a target image, CLI specified image, GUI selected image, or all images."""
+    runner = PipelineRunner()
 
-            print(f"[INFO] Alignment SSIM Score: {ssim_score:.2f}")
-            print(f"[INFO] Lighting Delta: {brightness_diff:+.2f} intensity units")
+    if target_path:
+        process_single_image(target_path, runner=runner)
+        return
 
-            # STEP 4: DELTA CALCULATIONS (INVENTORY, DRIFT, CLUTTER)
-            
-            master_objs = master_data["objects"]
-            current_objs = current_data["objects"].copy()
-            matched_master = []
-            drift_alerts = []
+    # Check CLI arguments
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    if args:
+        process_single_image(args[0], runner=runner)
+        return
 
-            for m_obj in master_objs:
-                best_match_idx = None
-                min_dist = float("inf")
+    if "--all" in sys.argv:
+        model = load_yolo()
+        for root, _, files in os.walk(CURRENT_DIR):
+            for f in files:
+                if f.lower().endswith(VALID_EXTENSIONS):
+                    process_single_image(os.path.join(root, f), model=model, runner=runner)
+        return
 
-                for idx, c_obj in enumerate(current_objs):
-                    if m_obj["label"] == c_obj["label"]:
-                        dist = math.hypot(
-                            m_obj["centroid"][0] - c_obj["centroid"][0],
-                            m_obj["centroid"][1] - c_obj["centroid"][1]
-                        )
-                        if dist < min_dist:
-                            min_dist = dist
-                            best_match_idx = idx
+    # Default: Open GUI Pop-up Dialog to select image
+    print("[INFO] Opening pop-up window to select image...")
+    selected_file = select_image_dialog()
+    if selected_file:
+        process_single_image(selected_file, runner=runner)
+    else:
+        print("[INFO] No image selected. Exiting.")
 
-                if best_match_idx is not None:
-                    c_obj = current_objs.pop(best_match_idx)
-                    matched_master.append(m_obj)
-                    if min_dist > MAX_DRIFT_PIXELS:
-                        drift_alerts.append(f"{m_obj['label'].capitalize()} shifted {int(min_dist)}px")
-
-            missing = [obj["label"] for obj in master_objs if obj not in matched_master]
-            foreign = [obj["label"] for obj in current_objs]
-
-            print("\n--- Reset Checklist ---")
-            if not missing:
-                print("[OK] All required room items present.")
-            else:
-                for item in set(missing):
-                    print(f"[MISSING] {missing.count(item)} x {item}")
-
-            if not drift_alerts:
-                print("[OK] Furniture positions verified.")
-            else:
-                for alert in drift_alerts:
-                    print(f"[DRIFT] {alert}")
-
-            if not foreign:
-                print("[OK] Room is clean (No clutter detected).")
-            else:
-                for item in set(foreign):
-                    print(f"[CLUTTER] Remove {foreign.count(item)} x {item}")
-process_uploaded_images()
+if __name__ == "__main__":
+    process_uploaded_images()
