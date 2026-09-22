@@ -60,35 +60,72 @@ def is_round_or_oval(contour, min_circularity=0.05, min_axis_ratio=0.15, min_sol
 
     return (circularity >= min_circularity) or (axis_ratio >= min_axis_ratio) or (solidity >= min_solidity)
 
-def detect_bulb_candidates(image, threshold_value=225, min_area=35, pad_pixels=30):
+def is_linear_light_source(contour, min_aspect_ratio=2.5, max_aspect_ratio=25.0, min_solidity=0.70):
     """
-    Finds potential active light sources using luminance and shape filtering.
-    Dynamically adjusts padding so small distant bulbs include adequate fixture context.
+    Identifies straight, elongated linear light fixtures (tube lights, batten LEDs).
+    Rejects scattered specular glares on floors/tiles by checking rectangular solidity.
+    """
+    area = cv2.contourArea(contour)
+    if area < 60:
+        return False
+
+    _, _, bw, bh = cv2.boundingRect(contour)
+    major = max(bw, bh)
+    minor = min(bw, bh) + 1e-5
+    aspect_ratio = major / minor
+
+    # Must be noticeably elongated, but not a thin scratch or tile seam
+    if not (min_aspect_ratio <= aspect_ratio <= max_aspect_ratio):
+        return False
+
+    # A genuine tube fixture maintains a cohesive rectangular footprint
+    hull = cv2.convexHull(contour)
+    hull_area = cv2.contourArea(hull)
+    solidity = area / hull_area if hull_area > 0 else 0.0
+
+    return solidity >= min_solidity
+
+def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=25):
+    """
+    Finds potential active light sources using adaptive resolution scaling
+    and luminance statistics to handle both small string bulbs and large fixtures.
     """
     h, w = image.shape[:2]
     gray = get_luminosity(image)
     smooth = reduce_haziness(gray, gamma=2.2)
-    thresh = isolate_active_bulbs(smooth, threshold_value=threshold_value)
 
+    # 1. Adapt min_area to image size (e.g. 4-8 px for tiny bulbs, scales up with resolution)
+    if min_area is None:
+        min_area = max(4, int(h * w * 0.000006))
+
+    # 2. Adapt threshold based on the top 0.3% brightest pixels in the frame
+    if threshold_value is None:
+        peak_luminance = float(np.percentile(smooth, 99.7))
+        threshold_value = max(190, int(peak_luminance * 0.90))
+
+    thresh = isolate_active_bulbs(smooth, threshold_value=threshold_value)
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     candidates = []
     for c in contours:
         area = cv2.contourArea(c)
-        if area > min_area and is_round_or_oval(c):
-            bx, by, bw, bh = cv2.boundingRect(c)
-            
-            # Small distant bulbs need extra relative padding to reveal fixture/wall details
-            actual_pad = pad_pixels if max(bw, bh) > 30 else pad_pixels + 15
+        if area < min_area:
+            continue
 
-            x1 = max(0, bx - actual_pad)
-            y1 = max(0, by - actual_pad)
-            x2 = min(w, bx + bw + actual_pad)
-            y2 = min(h, by + bh + actual_pad)
+        if not (is_round_or_oval(c) or is_linear_light_source(c)):
+            continue
 
-            candidates.append({
-                "bbox": [x1, y1, x2, y2],
-                "area": float(area)
-            })
+        bx, by, bw, bh = cv2.boundingRect(c)
+        actual_pad = pad_pixels + 15 if max(bw, bh) < 25 else pad_pixels
+
+        x1 = max(0, bx - actual_pad)
+        y1 = max(0, by - actual_pad)
+        x2 = min(w, bx + bw + actual_pad)
+        y2 = min(h, by + bh + actual_pad)
+
+        candidates.append({
+            "bbox": [x1, y1, x2, y2],
+            "area": float(area)
+        })
 
     return candidates
