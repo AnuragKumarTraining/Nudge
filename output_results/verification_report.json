@@ -1,0 +1,644 @@
+{
+  "file": "Media.jpg",
+  "total_opencv_candidates": 53,
+  "vlm_confirmed_bulbs": 17,
+  "vlm_rejected_artifacts": 36,
+  "detections": [
+    {
+      "id": 1,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.1019,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1679,
+        "y1": 1236,
+        "x2": 1724,
+        "y2": 1272
+      }
+    },
+    {
+      "id": 2,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0806,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1654,
+        "y1": 1220,
+        "x2": 1722,
+        "y2": 1258
+      }
+    },
+    {
+      "id": 3,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.3818,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1542,
+        "y1": 1209,
+        "x2": 1585,
+        "y2": 1265
+      }
+    },
+    {
+      "id": 4,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2872,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1652,
+        "y1": 1188,
+        "x2": 1724,
+        "y2": 1246
+      }
+    },
+    {
+      "id": 5,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5756,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1659,
+        "y1": 1182,
+        "x2": 1700,
+        "y2": 1220
+      }
+    },
+    {
+      "id": 6,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.6023,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1219,
+        "y1": 1178,
+        "x2": 1256,
+        "y2": 1238
+      }
+    },
+    {
+      "id": 7,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.9858,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1337,
+        "y1": 1167,
+        "x2": 1380,
+        "y2": 1215
+      }
+    },
+    {
+      "id": 8,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0696,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 773,
+        "y1": 1125,
+        "x2": 828,
+        "y2": 1175
+      }
+    },
+    {
+      "id": 9,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2008,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1077,
+        "y1": 1110,
+        "x2": 1129,
+        "y2": 1169
+      }
+    },
+    {
+      "id": 10,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.6402,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1693,
+        "y1": 1107,
+        "x2": 1724,
+        "y2": 1229
+      }
+    },
+    {
+      "id": 11,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.675,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1086,
+        "y1": 1093,
+        "x2": 1123,
+        "y2": 1130
+      }
+    },
+    {
+      "id": 12,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.222,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 777,
+        "y1": 1091,
+        "x2": 829,
+        "y2": 1140
+      }
+    },
+    {
+      "id": 13,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.7442,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1075,
+        "y1": 1082,
+        "x2": 1113,
+        "y2": 1127
+      }
+    },
+    {
+      "id": 14,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2855,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 393,
+        "y1": 1052,
+        "x2": 436,
+        "y2": 1085
+      }
+    },
+    {
+      "id": 15,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.1892,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1064,
+        "y1": 1035,
+        "x2": 1105,
+        "y2": 1084
+      }
+    },
+    {
+      "id": 16,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.1802,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 908,
+        "y1": 1034,
+        "x2": 948,
+        "y2": 1071
+      }
+    },
+    {
+      "id": 17,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2389,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 775,
+        "y1": 1027,
+        "x2": 821,
+        "y2": 1067
+      }
+    },
+    {
+      "id": 18,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0334,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 907,
+        "y1": 1018,
+        "x2": 973,
+        "y2": 1136
+      }
+    },
+    {
+      "id": 19,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2135,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1037,
+        "y1": 1016,
+        "x2": 1077,
+        "y2": 1056
+      }
+    },
+    {
+      "id": 20,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2305,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1053,
+        "y1": 1013,
+        "x2": 1093,
+        "y2": 1058
+      }
+    },
+    {
+      "id": 21,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.8807,
+      "label": "bulb",
+      "bbox": {
+        "x1": 646,
+        "y1": 1008,
+        "x2": 685,
+        "y2": 1121
+      }
+    },
+    {
+      "id": 22,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2863,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 784,
+        "y1": 1007,
+        "x2": 825,
+        "y2": 1054
+      }
+    },
+    {
+      "id": 23,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2771,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 793,
+        "y1": 1002,
+        "x2": 831,
+        "y2": 1044
+      }
+    },
+    {
+      "id": 24,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0231,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1067,
+        "y1": 1000,
+        "x2": 1123,
+        "y2": 1064
+      }
+    },
+    {
+      "id": 25,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.7801,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1231,
+        "y1": 998,
+        "x2": 1271,
+        "y2": 1052
+      }
+    },
+    {
+      "id": 26,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0955,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 752,
+        "y1": 995,
+        "x2": 789,
+        "y2": 1035
+      }
+    },
+    {
+      "id": 27,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.1606,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 899,
+        "y1": 994,
+        "x2": 947,
+        "y2": 1057
+      }
+    },
+    {
+      "id": 28,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.3009,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1038,
+        "y1": 993,
+        "x2": 1082,
+        "y2": 1030
+      }
+    },
+    {
+      "id": 29,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0822,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1677,
+        "y1": 985,
+        "x2": 1723,
+        "y2": 1029
+      }
+    },
+    {
+      "id": 30,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.1785,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1646,
+        "y1": 985,
+        "x2": 1684,
+        "y2": 1023
+      }
+    },
+    {
+      "id": 31,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5192,
+      "label": "bulb",
+      "bbox": {
+        "x1": 750,
+        "y1": 983,
+        "x2": 784,
+        "y2": 1026
+      }
+    },
+    {
+      "id": 32,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5008,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1689,
+        "y1": 948,
+        "x2": 1724,
+        "y2": 986
+      }
+    },
+    {
+      "id": 33,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.3964,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1696,
+        "y1": 939,
+        "x2": 1724,
+        "y2": 980
+      }
+    },
+    {
+      "id": 34,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.3782,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1234,
+        "y1": 928,
+        "x2": 1270,
+        "y2": 969
+      }
+    },
+    {
+      "id": 35,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0426,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 654,
+        "y1": 909,
+        "x2": 763,
+        "y2": 1125
+      }
+    },
+    {
+      "id": 36,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0104,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 491,
+        "y1": 909,
+        "x2": 548,
+        "y2": 1126
+      }
+    },
+    {
+      "id": 37,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0242,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 839,
+        "y1": 905,
+        "x2": 946,
+        "y2": 1168
+      }
+    },
+    {
+      "id": 38,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0438,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1010,
+        "y1": 904,
+        "x2": 1051,
+        "y2": 946
+      }
+    },
+    {
+      "id": 39,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5025,
+      "label": "bulb",
+      "bbox": {
+        "x1": 734,
+        "y1": 904,
+        "x2": 824,
+        "y2": 947
+      }
+    },
+    {
+      "id": 40,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0315,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1005,
+        "y1": 894,
+        "x2": 1046,
+        "y2": 932
+      }
+    },
+    {
+      "id": 41,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0213,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1198,
+        "y1": 893,
+        "x2": 1250,
+        "y2": 1098
+      }
+    },
+    {
+      "id": 42,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5786,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1247,
+        "y1": 880,
+        "x2": 1281,
+        "y2": 918
+      }
+    },
+    {
+      "id": 43,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.04,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1265,
+        "y1": 874,
+        "x2": 1300,
+        "y2": 919
+      }
+    },
+    {
+      "id": 44,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5854,
+      "label": "bulb",
+      "bbox": {
+        "x1": 951,
+        "y1": 870,
+        "x2": 989,
+        "y2": 1002
+      }
+    },
+    {
+      "id": 45,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0157,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 732,
+        "y1": 845,
+        "x2": 771,
+        "y2": 904
+      }
+    },
+    {
+      "id": 46,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.3281,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 647,
+        "y1": 822,
+        "x2": 689,
+        "y2": 914
+      }
+    },
+    {
+      "id": 47,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.0076,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 659,
+        "y1": 814,
+        "x2": 750,
+        "y2": 913
+      }
+    },
+    {
+      "id": 48,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5082,
+      "label": "bulb",
+      "bbox": {
+        "x1": 836,
+        "y1": 789,
+        "x2": 872,
+        "y2": 860
+      }
+    },
+    {
+      "id": 49,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.5835,
+      "label": "bulb",
+      "bbox": {
+        "x1": 952,
+        "y1": 768,
+        "x2": 987,
+        "y2": 835
+      }
+    },
+    {
+      "id": 50,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.2064,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1672,
+        "y1": 507,
+        "x2": 1724,
+        "y2": 572
+      }
+    },
+    {
+      "id": 51,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.9972,
+      "label": "bulb",
+      "bbox": {
+        "x1": 1108,
+        "y1": 461,
+        "x2": 1210,
+        "y2": 521
+      }
+    },
+    {
+      "id": 52,
+      "status": "REJECTED_ARTIFACT",
+      "vlm_confidence": 0.1223,
+      "label": "glare/artifact",
+      "bbox": {
+        "x1": 1633,
+        "y1": 451,
+        "x2": 1724,
+        "y2": 541
+      }
+    },
+    {
+      "id": 53,
+      "status": "CONFIRMED_BULB",
+      "vlm_confidence": 0.8176,
+      "label": "bulb",
+      "bbox": {
+        "x1": 573,
+        "y1": 0,
+        "x2": 953,
+        "y2": 213
+      }
+    }
+  ]
+}

@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 @dataclass(frozen=True)
 class AppConfig:
     # Source: 0 for webcam, or video path string
-    video_source: int | str = 0
-    # video_source: int | str = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\Iris_Tracking\WIN_20260921_11_11_39_Pro.mp4"
+    #video_source: int | str = 0
+    video_source: int | str = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\Iris_Tracking\WIN_20260921_11_11_39_Pro.mp4"
 
     script_dir: str = field(default_factory=lambda: os.path.dirname(os.path.abspath(__file__)))
     model_path: str = field(init=False)
