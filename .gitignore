@@ -38,3 +38,7 @@ utils\__pycache__
 __pycache__
 .env
 Ultralytics/
+
+# Legacy modules
+Face/
+Iris_Tracking/
