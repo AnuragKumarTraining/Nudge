@@ -26,10 +26,17 @@ class VLMClassifier:
 
         print("[3/3] Pre-computing text embeddings for target classes...", end=" ", flush=True)
         self.candidate_labels = [
-            "a photo of an electric light bulb, ceiling lamp, or illuminated lamp fixture",
-            "a photo of human skin, face, nose, ear, or specular skin highlight",
-            "a photo of bathroom wall tiles, grout lines, or appliance knob dial",
-            "a photo of surface glare, reflection, or sunlit background"
+            # [0] Target Luminaire (Physical glowing light source)
+            "a close-up photo of an active glowing light fixture, turned on light bulb, ceiling lamp, or illuminated linear tube light",
+
+            # [1] Environmental Reflections & Gloss (Highest false-positive risk)
+            "a photo of shiny floor reflection, wet bathroom tile glare, grout lines, or mirror light reflection",
+
+            # [2] Architectural Surfaces & Metal Fixtures
+            "a photo of a blank white ceiling, plain wall, chrome faucet, appliance dial, or metal conduit pipe",
+
+            # [3] Natural Daylight & Windows
+            "a photo of bright outdoor daylight, a sunlit window, or specular white glare"
         ]
 
         text_inputs = self.processor(

@@ -160,4 +160,4 @@ def process_bulb_image(image_path):
 
 if __name__ == "__main__":
     # Replace with your actual image path
-    process_bulb_image(r'C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\input_images\FirstFloor.jpg')
+    process_bulb_image(r'C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\input_images\8690b84b73e1bb67fe749caff7ea804e.jpg')

@@ -1,9 +1,9 @@
 import os
 import cv2
 import json
-from Nudge.Bulbs.state_analyzer import detect_bulb_candidates
-from Nudge.Bulbs.vlm_classifier import VLMClassifier
 import numpy as np
+from state_analyzer import detect_bulb_candidates
+from vlm_classifier import VLMClassifier
 
 def run_reverse_pipeline(image_path, output_dir="output_results"):
     os.makedirs(output_dir, exist_ok=True)
@@ -15,17 +15,16 @@ def run_reverse_pipeline(image_path, output_dir="output_results"):
     # Ensure clean contiguous array
     image = np.ascontiguousarray(image, dtype=np.uint8)
 
-    # Stage 1: OpenCV extracts candidate glowing fixtures
-    print("[1/2] Finding glowing light candidates using OpenCV...")
-    # min_area=30 prevents hundreds of single-pixel specular glints from flooding Stage 2
-    candidates = detect_bulb_candidates(image, threshold_value=225, min_area=30, pad_pixels=35)
+    # Stage 1: OpenCV extracts candidate glowing fixtures dynamically
+    print("[1/2] Finding glowing light candidates using adaptive OpenCV extraction...")
+    # Passing threshold_value=None and min_area=None enables scale-adaptive candidate proposals
+    candidates = detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=25)
     print(f"OpenCV found {len(candidates)} candidate light sources.")
 
     if not candidates:
         print("[ALERT] No glowing regions found by OpenCV.")
         return
 
-    # Stage 2: High-res VLM batch verification
     # Stage 2: High-res VLM batch verification
     print("[2/2] Launching VLM verification...")
     vlm = VLMClassifier()
@@ -42,15 +41,22 @@ def run_reverse_pipeline(image_path, output_dir="output_results"):
     print("[PIPELINE] Annotating results and parsing verdicts...")
     for idx, (cand, (is_bulb, conf, label)) in enumerate(zip(candidates, vlm_results), start=1):
         x1, y1, x2, y2 = cand["bbox"]
-        status = "CONFIRMED_BULB" if is_bulb else "REJECTED_ARTIFACT"
+        w_box = x2 - x1
+        h_box = y2 - y1
+        aspect_ratio = max(w_box, h_box) / (min(w_box, h_box) + 1e-5)
+        
+        # Categorize luminaire geometry
+        fixture_type = "Tubelight" if aspect_ratio >= 2.5 else "Bulb"
+        status = f"CONFIRMED_{fixture_type.upper()}" if is_bulb else "REJECTED_ARTIFACT"
         color = (0, 255, 0) if is_bulb else (0, 0, 255)
 
         # Log individual candidate verdict in terminal
-        tag_icon = "✓ BULB" if is_bulb else "✗ REJECT"
-        print(f"  [{idx:02d}/{len(candidates):02d}] {tag_icon} | Conf: {conf*100:5.1f}% | Box: [{x1}, {y1}, {x2}, {y2}]")
+        tag_icon = f"✓ {fixture_type.upper()}" if is_bulb else "✗ REJECT"
+        print(f"  [{idx:02d}/{len(candidates):02d}] {tag_icon:13s} | Conf: {conf*100:5.1f}% | Box: [{x1}, {y1}, {x2}, {y2}]")
 
         verified_bulbs.append({
             "id": idx,
+            "type": fixture_type if is_bulb else "Artifact",
             "status": status,
             "vlm_confidence": round(conf, 4),
             "label": label,
@@ -58,25 +64,25 @@ def run_reverse_pipeline(image_path, output_dir="output_results"):
         })
 
         cv2.rectangle(annotated, (x1, y1), (x2, y2), color, 2)
-        tag = f"Bulb ({conf*100:.0f}%)" if is_bulb else "Glare"
+        tag = f"{fixture_type} ({conf*100:.0f}%)" if is_bulb else "Artifact"
         cv2.putText(annotated, f"#{idx} {tag}", (x1, max(18, y1 - 6)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 1, cv2.LINE_AA)
 
-    confirmed_count = sum(1 for b in verified_bulbs if b["status"] == "CONFIRMED_BULB")
+    confirmed_count = sum(1 for b in verified_bulbs if "CONFIRMED" in b["status"])
     rejected_count = len(verified_bulbs) - confirmed_count
 
     if confirmed_count == 0:
-        print("[ALERT] No active light bulbs were detected in the image.")
-        banner_text = "STATUS: NO BULBS DETECTED"
-        cv2.rectangle(annotated, (10, 10), (420, 55), (0, 0, 0), -1)
+        print("[ALERT] No active light sources were detected in the image.")
+        banner_text = "STATUS: NO LIGHTS DETECTED"
+        cv2.rectangle(annotated, (10, 10), (450, 55), (0, 0, 0), -1)
         cv2.putText(annotated, banner_text, (20, 42),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)
 
     report = {
         "file": os.path.basename(image_path),
-        "status": "BULBS_FOUND" if confirmed_count > 0 else "NO_BULBS_DETECTED",
+        "status": "LIGHTS_FOUND" if confirmed_count > 0 else "NO_LIGHTS_DETECTED",
         "total_opencv_candidates": len(candidates),
-        "vlm_confirmed_bulbs": confirmed_count,
+        "vlm_confirmed_lights": confirmed_count,
         "vlm_rejected_artifacts": rejected_count,
         "detections": verified_bulbs
     }
@@ -88,9 +94,9 @@ def run_reverse_pipeline(image_path, output_dir="output_results"):
     with open(out_json_path, "w") as f:
         json.dump(report, f, indent=2)
 
-    print(f"Finished: {confirmed_count} confirmed bulbs, {rejected_count} rejected artifacts.")
+    print(f"Finished: {confirmed_count} confirmed light source(s), {rejected_count} rejected artifact(s).")
     print(f"Results saved inside '{output_dir}'.")
 
 if __name__ == "__main__":
-    TARGET_IMAGE = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\input_images\image1.png"
+    TARGET_IMAGE = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\input_images\Face.jpg"
     run_reverse_pipeline(TARGET_IMAGE)
