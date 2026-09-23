@@ -43,6 +43,7 @@ You must map detected discrepancies to the following strict categories:
 
 ### RULES
 - Only report issues that are supported by visual evidence.
+- Only report issues that are required by the rule. Other issues might be there, but ignore them. ONLY focus on rule.
 - Do not invent objects or problems.
 - Use the MASTER IMAGE as the visual reference for the expected state.
 - Use MASTER JSON as additional structured baseline information.

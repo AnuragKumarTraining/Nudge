@@ -1,0 +1,97 @@
+Project deltavision {
+  database_type: 'PostgreSQL'
+  Note: 'Metadata only. Images and full JSON files live in S3 and are referenced by s3_prefix.'
+}
+
+Enum property_kind {
+  stay
+  cafe
+}
+
+Enum master_status {
+  PENDING
+  PROCESSING
+  ACTIVE
+  REJECTED
+  RETIRED
+}
+
+Enum capture_status {
+  PENDING
+  PROCESSING
+  REJECTED
+  COMPLETE
+  FAILED
+}
+
+Table tenants {
+  tenant_id    uuid [pk]
+  display_name text [not null]
+  created_at   timestamptz [not null, default: `now()`]
+}
+
+Table properties {
+  property_id  uuid [pk]
+  tenant_id    uuid [not null]
+  kind         property_kind [not null]
+  display_name text [not null]
+  created_at   timestamptz [not null, default: `now()`]
+}
+
+Table rooms {
+  room_id      uuid [pk]
+  property_id  uuid [not null]
+  display_name text [not null]
+  slug         text [not null]
+  created_at   timestamptz [not null, default: `now()`]
+
+  indexes {
+    (property_id, slug) [unique]
+  }
+}
+
+Table masters {
+  master_id     uuid [pk]
+  room_id       uuid [not null]
+  variant       text [not null, default: 'default', note: 'e.g. 4-chair, 2-chair']
+  status        master_status [not null]
+  s3_prefix     text [not null, note: 't/{tenant}/p/{property}/r/{room}/masters/{master_id}/']
+  quality_score real
+  reject_reason text
+  image_width   int
+  image_height  int
+  created_at    timestamptz [not null, default: `now()`]
+  activated_at  timestamptz
+
+  indexes {
+    (room_id, variant) [unique, name: 'one_active_master', note: 'partial index: WHERE status = ACTIVE (at most one active master per room per variant)']
+  }
+}
+
+Table captures {
+  capture_id       uuid [pk, note: 'UUIDv7, generated in app code']
+  room_id          uuid [not null]
+  master_id        uuid [note: 'master actually used for this comparison; null until one is chosen']
+  status           capture_status [not null]
+  reject_reason    text
+  captured_at      timestamptz [not null, note: 'from device manifest']
+  s3_prefix        text [not null, note: '.../captures/{yyyy}/{mm}/{dd}/{capture_id}/']
+  ssim             real
+  brightness_delta real
+  findings         jsonb [note: 'compact delta summary: missing / drift / clutter']
+  vlm_verdict      text [note: 'clean | minor_issue | needs_cleaning | cannot_assess']
+  checklist        jsonb
+  created_at       timestamptz [not null, default: `now()`]
+  processed_at     timestamptz
+
+  indexes {
+    (room_id, captured_at) [name: 'captures_room_time', note: 'captured_at is indexed DESC']
+    status [name: 'captures_open', note: 'partial index: WHERE status IN (PENDING, PROCESSING)']
+  }
+}
+
+Ref: properties.tenant_id > tenants.tenant_id
+Ref: rooms.property_id    > properties.property_id
+Ref: masters.room_id      > rooms.room_id
+Ref: captures.room_id     > rooms.room_id
+Ref: captures.master_id   > masters.master_id

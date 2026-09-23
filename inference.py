@@ -68,6 +68,8 @@ def process_single_image(img_path: str, model=None, runner=None) -> PipelineCont
 
     return runner.run(ctx)
 
+
+
 def process_uploaded_images(target_path: str | None = None):
     """Entry point to process a target image, CLI specified image, GUI selected image, or all images."""
     runner = PipelineRunner()
