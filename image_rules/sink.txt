@@ -1,0 +1,1 @@
+sink should be clean and as shown in the master image.
