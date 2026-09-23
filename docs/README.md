@@ -1,6 +1,6 @@
-# Nudge
+# DeltaVision
 
-Nudge is an event-driven computer vision pipeline designed for hospitality spaces like cafes and homestays. The system is built to monitor visual conditions, compare real-world captures against approved baselines or rules, and trigger downstream actions when a scene deviates from expected standards.
+DeltaVision is an event-driven computer vision pipeline designed for hospitality spaces like cafes and homestays. The system is built to monitor visual conditions, compare real-world captures against approved baselines or rules, and trigger downstream actions when a scene deviates from expected standards.
 
 This repository contains the core pipeline logic, configuration, supporting utilities, and architecture documentation for the end-to-end application.
 
@@ -103,7 +103,4 @@ Because repository setup details may vary by environment, the config and pipelin
 
 This repository is an architecture and pipeline prototype with supporting implementation modules and documentation. It is intended as a practical end-to-end CV workflow for hospitality monitoring and operational auditing.
 
-## License
-
-This project does not currently declare a license in the repository root. If needed, add an appropriate open-source license before public distribution.
 
