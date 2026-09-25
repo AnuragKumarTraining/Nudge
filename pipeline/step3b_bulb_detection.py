@@ -1,6 +1,8 @@
 from __future__ import annotations
 from pipeline_helper.context import PipelineContext
 from Bulbs.bulb_detector import BulbDetector
+import os
+import cv2
 
 # Cache the detector instance so weights load only once
 _BULB_DETECTOR: BulbDetector | None = None
@@ -30,4 +32,20 @@ def run(ctx: PipelineContext) -> bool:
     ctx.bulb_detections = bulb_result["detections"]
 
     print(f"[INFO] Active Bulbs Detected: {current_count} (Baseline: {baseline_count})")
+
+    # =========================================================================
+    # SAVE IMAGE BEFORE VLM INSPECTION (Only if at least one bulb is detected)
+    # =========================================================================
+    annotated_frame = bulb_result.get("annotated_frame")
+    if current_count > 0 and annotated_frame is not None:
+        out_dir = "output_images"
+        os.makedirs(out_dir, exist_ok=True)
+
+        room_tag = getattr(ctx, "room_name", "room")
+        save_path = os.path.join(out_dir, f"{room_tag}_bulbs_annotated.jpg")
+
+        cv2.imwrite(save_path, annotated_frame)
+        print(f"[INFO] Bulb detection visual saved to: {save_path} ({current_count} bulb(s) marked)")
+    # =========================================================================
+
     return True
