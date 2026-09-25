@@ -1,0 +1,149 @@
+{
+    "image_shape": [
+        2500,
+        3750
+    ],
+    "brightness": 102.41,
+    "objects": [
+        {
+            "label": "chair",
+            "bbox": [
+                2774.51,
+                1556.12,
+                3434.4,
+                2365.03
+            ],
+            "centroid": [
+                3104,
+                1960
+            ],
+            "confidence": 0.9
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                141.17,
+                1589.58,
+                738.06,
+                2323.88
+            ],
+            "centroid": [
+                439,
+                1956
+            ],
+            "confidence": 0.89
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                899.85,
+                1524.85,
+                1564.43,
+                2387.65
+            ],
+            "centroid": [
+                1232,
+                1956
+            ],
+            "confidence": 0.88
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                1807.66,
+                1509.09,
+                2367.01,
+                2209.93
+            ],
+            "centroid": [
+                2087,
+                1859
+            ],
+            "confidence": 0.77
+        },
+        {
+            "label": "dining table",
+            "bbox": [
+                385.27,
+                1607.49,
+                1081.14,
+                2270.49
+            ],
+            "centroid": [
+                733,
+                1938
+            ],
+            "confidence": 0.64
+        },
+        {
+            "label": "potted plant",
+            "bbox": [
+                338.58,
+                1009.94,
+                924.83,
+                1641.76
+            ],
+            "centroid": [
+                631,
+                1325
+            ],
+            "confidence": 0.63
+        },
+        {
+            "label": "potted plant",
+            "bbox": [
+                3326.56,
+                813.56,
+                3748.45,
+                1669.58
+            ],
+            "centroid": [
+                3537,
+                1241
+            ],
+            "confidence": 0.53
+        },
+        {
+            "label": "chair",
+            "bbox": [
+                1499.25,
+                1483.65,
+                1649.84,
+                1984.27
+            ],
+            "centroid": [
+                1574,
+                1733
+            ],
+            "confidence": 0.44
+        },
+        {
+            "label": "potted plant",
+            "bbox": [
+                3329.11,
+                797.96,
+                3749.3,
+                2104.61
+            ],
+            "centroid": [
+                3539,
+                1451
+            ],
+            "confidence": 0.39
+        },
+        {
+            "label": "dining table",
+            "bbox": [
+                1942.39,
+                1512.75,
+                3078.23,
+                2133.09
+            ],
+            "centroid": [
+                2510,
+                1822
+            ],
+            "confidence": 0.29
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "image_shape": [
+        2048,
+        921
+    ],
+    "brightness": 135.7,
+    "objects": [
+        {
+            "label": "laptop",
+            "bbox": [
+                729.54,
+                95.83,
+                920.7,
+                311.63
+            ],
+            "centroid": [
+                825,
+                203
+            ],
+            "confidence": 0.82
+        },
+        {
+            "label": "bed",
+            "bbox": [
+                1.22,
+                253.4,
+                921.0,
+                2025.06
+            ],
+            "centroid": [
+                461,
+                1139
+            ],
+            "confidence": 0.69
+        },
+        {
+            "label": "skateboard",
+            "bbox": [
+                3.19,
+                1630.96,
+                920.7,
+                2045.94
+            ],
+            "centroid": [
+                461,
+                1838
+            ],
+            "confidence": 0.34
+        }
+    ]
+}

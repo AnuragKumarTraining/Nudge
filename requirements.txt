@@ -1,0 +1,12 @@
+streamlit
+opencv-python
+pandas
+Pillow
+numpy
+scikit-image
+ultralytics
+psycopg2-binary
+python-dotenv
+pydantic>=2.0
+google-genai
+huggingface-hub
