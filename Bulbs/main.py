@@ -18,7 +18,7 @@ def run_reverse_pipeline(image_path, output_dir="output_results"):
     # Stage 1: OpenCV extracts candidate glowing fixtures dynamically
     print("[1/2] Finding glowing light candidates using adaptive OpenCV extraction...")
     # Passing threshold_value=None and min_area=None enables scale-adaptive candidate proposals
-    candidates = detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=25)
+    candidates = detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=45)
     print(f"OpenCV found {len(candidates)} candidate light sources.")
 
     if not candidates:
@@ -98,5 +98,5 @@ def run_reverse_pipeline(image_path, output_dir="output_results"):
     print(f"Results saved inside '{output_dir}'.")
 
 if __name__ == "__main__":
-    TARGET_IMAGE = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\input_images\Face.jpg"
+    TARGET_IMAGE = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge\current_images\kitchen.jpg"
     run_reverse_pipeline(TARGET_IMAGE)

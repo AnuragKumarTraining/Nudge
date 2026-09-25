@@ -48,6 +48,19 @@
             "confidence": 0.32
         }
     ],
-    "bulb_count": 0,
-    "bulbs": []
+    "bulb_count": 1,
+    "bulbs": [
+        {
+            "id": 1,
+            "confidence": 0.5565,
+            "label": "bulb",
+            "bbox": [
+                1887,
+                458,
+                2009,
+                635
+            ],
+            "contour_area": 2327.0
+        }
+    ]
 }

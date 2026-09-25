@@ -9,23 +9,27 @@
     "bulbs": [
         {
             "id": 1,
-            "confidence": 0.9656,
+            "confidence": 0.9775,
+            "label": "bulb",
             "bbox": [
-                1286,
-                430,
-                1459,
-                588
-            ]
+                1281,
+                425,
+                1463,
+                593
+            ],
+            "contour_area": 5204.0
         },
         {
             "id": 2,
-            "confidence": 0.9894,
+            "confidence": 0.938,
+            "label": "bulb",
             "bbox": [
-                323,
-                337,
-                515,
-                514
-            ]
+                319,
+                333,
+                519,
+                519
+            ],
+            "contour_area": 8157.0
         }
     ]
 }

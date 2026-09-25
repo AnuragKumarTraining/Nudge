@@ -1,0 +1,62 @@
+{
+    "image_shape": [
+        1724,
+        1293
+    ],
+    "brightness": 93.83,
+    "objects": [
+        {
+            "label": "refrigerator",
+            "bbox": [
+                163.23,
+                1315.27,
+                649.85,
+                1723.1
+            ],
+            "centroid": [
+                406,
+                1519
+            ],
+            "confidence": 0.33
+        }
+    ],
+    "bulb_count": 3,
+    "bulbs": [
+        {
+            "id": 1,
+            "confidence": 0.9345,
+            "label": "bulb",
+            "bbox": [
+                58,
+                959,
+                292,
+                1090
+            ],
+            "contour_area": 3589.5
+        },
+        {
+            "id": 2,
+            "confidence": 0.904,
+            "label": "bulb",
+            "bbox": [
+                627,
+                537,
+                766,
+                650
+            ],
+            "contour_area": 850.5
+        },
+        {
+            "id": 3,
+            "confidence": 0.9637,
+            "label": "bulb",
+            "bbox": [
+                372,
+                150,
+                544,
+                298
+            ],
+            "contour_area": 3592.0
+        }
+    ]
+}
