@@ -3,7 +3,7 @@ from sqlalchemy import inspect
 from src.database.base import Base
 
 # Import all models so SQLAlchemy registers them
-from src.models import (
+from src.database.models import (
     User,
     Session,
     Plan,

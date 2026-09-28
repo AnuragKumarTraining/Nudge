@@ -5,19 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from src.database.base import Base
-from src.models import (
-    User,
-    Session,
-    Plan,
-    Property,
-    Room,
-    Asset,
-    Master,
-    Schedule,
-    Capture,
-    Prompt,
-)
-
+from src.database.models.schema import *
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
