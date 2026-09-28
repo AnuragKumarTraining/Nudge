@@ -24,39 +24,39 @@
     "bulbs": [
         {
             "id": 1,
-            "confidence": 0.9345,
+            "confidence": 0.7367,
             "label": "bulb",
             "bbox": [
-                58,
-                959,
-                292,
-                1090
+                96,
+                942,
+                257,
+                1083
             ],
-            "contour_area": 3589.5
+            "contour_area": 15037.0
         },
         {
             "id": 2,
-            "confidence": 0.904,
+            "confidence": 0.8772,
             "label": "bulb",
             "bbox": [
-                627,
-                537,
-                766,
-                650
+                413,
+                190,
+                503,
+                258
             ],
-            "contour_area": 850.5
+            "contour_area": 3676.0
         },
         {
             "id": 3,
-            "confidence": 0.9637,
+            "confidence": 0.9879,
             "label": "bulb",
             "bbox": [
-                372,
-                150,
-                544,
-                298
+                668,
+                578,
+                726,
+                610
             ],
-            "contour_area": 3592.0
+            "contour_area": 882.0
         }
     ]
 }

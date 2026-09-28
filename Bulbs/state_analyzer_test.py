@@ -81,6 +81,42 @@ def is_linear_light_source(contour, min_aspect_ratio=2.5, max_aspect_ratio=25.0,
     return solidity >= min_solidity
 
 
+def passes_radial_gradient_gating(gray_image, contour, num_rays=8, radius_fraction=0.8):
+    """Rejects non-emissive surface glares by verifying symmetrical intensity decay from the centroid."""
+    M = cv2.moments(contour)
+    if M["m00"] == 0:
+        return False
+    cx = int(M["m10"] / M["m00"])
+    cy = int(M["m01"] / M["m00"])
+    
+    _, _, w, h = cv2.boundingRect(contour)
+    max_r = max(w, h) / 2.0 * radius_fraction
+    if max_r < 2:
+        return True
+        
+    h_img, w_img = gray_image.shape[:2]
+    if not (0 <= cx < w_img and 0 <= cy < h_img):
+        return False
+        
+    center_val = float(gray_image[cy, cx])
+    valid_rays = 0
+    
+    for i in range(num_rays):
+        angle = 2 * np.pi * i / num_rays
+        dx, dy = np.cos(angle), np.sin(angle)
+        
+        x1, y1 = int(cx + dx * max_r * 0.4), int(cy + dy * max_r * 0.4)
+        x2, y2 = int(cx + dx * max_r * 0.8), int(cy + dy * max_r * 0.8)
+        
+        if not (0 <= x1 < w_img and 0 <= y1 < h_img and 0 <= x2 < w_img and 0 <= y2 < h_img):
+            continue
+            
+        if center_val >= float(gray_image[y1, x1]) >= float(gray_image[y2, x2]):
+            valid_rays += 1
+            
+    return valid_rays >= (num_rays * 0.5)
+
+
 def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=15):
     """
     Finds potential active light sources, applying NMS to prevent duplicates
@@ -90,9 +126,9 @@ def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixel
     gray = get_luminosity(image)
     smooth = reduce_haziness(gray, gamma=2.0)
 
-    # 1. Lower the min_area multiplier slightly to catch distant garden pathway lights
+    # 1. Raised min_area multiplier to filter out tiny noisy pixels early
     if min_area is None:
-        min_area = max(4, int(h * w * 0.000004))
+        min_area = max(15, int(h * w * 0.00001))
 
     # 2. Cap the adaptive threshold to prevent bright foreground lamps from blinding background lights
     if threshold_value is None:
@@ -111,7 +147,14 @@ def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixel
         if area < min_area:
             continue
 
-        if not (is_round_or_oval(c) or is_linear_light_source(c)):
+        is_round = is_round_or_oval(c)
+        is_linear = is_linear_light_source(c)
+        
+        if not (is_round or is_linear):
+            continue
+
+        # Cull non-emissive surface reflections using radial luminosity decay
+        if is_round and not is_linear and not passes_radial_gradient_gating(smooth, c):
             continue
 
         bx, by, bw, bh = cv2.boundingRect(c)
@@ -156,5 +199,6 @@ def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixel
     )
 
     if len(indices) > 0:
-        return [raw_candidates[i] for i in np.array(indices).flatten()]
+        # Cap the maximum candidates to 15 to prevent VLM CPU bottleneck
+        return [raw_candidates[i] for i in np.array(indices).flatten()][:15]
     return []

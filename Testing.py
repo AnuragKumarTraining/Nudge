@@ -1,7 +1,7 @@
 import os
 import glob
 import cv2
-from Bulbs.bulb_detector import BulbDetector
+from Bulbs.bulb_detector_test import BulbDetector
 
 # Setup directories
 BASE_DIR = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge"

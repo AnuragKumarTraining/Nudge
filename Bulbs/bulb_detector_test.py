@@ -5,7 +5,7 @@ from Bulbs.vlm_classifier_test import VLMClassifier
 
 
 class BulbDetector:
-    def __init__(self, model_id: str = "openai/clip-vit-large-patch14-336"):
+    def __init__(self, model_id: str = "openai/clip-vit-base-patch32"):
         self.vlm = VLMClassifier(model_id=model_id)
 
     def detect_bulbs(
@@ -43,18 +43,21 @@ class BulbDetector:
                 "annotated_frame": annotated_frame,
             }
 
-        # 2. Validate and clamp candidate bounding boxes
+        # 2. Extract valid image crops (Using padded bbox for VLM)
         valid_candidates = []
+        crops = []
         for cand in candidates:
             x1, y1, x2, y2 = cand["bbox"]
             x1, y1 = max(0, int(x1)), max(0, int(y1))
             x2, y2 = min(w, int(x2)), min(h, int(y2))
-            
-            if (x2 - x1) > 2 and (y2 - y1) > 2:
+
+            crop = frame[y1:y2, x1:x2]
+            if crop.size > 0 and crop.shape[0] > 2 and crop.shape[1] > 2:
                 cand["bbox"] = [x1, y1, x2, y2]
                 valid_candidates.append(cand)
+                crops.append(crop)
 
-        if not valid_candidates:
+        if not crops:
             return {
                 "detected": False,
                 "count": 0,
@@ -62,8 +65,8 @@ class BulbDetector:
                 "annotated_frame": annotated_frame,
             }
 
-        # 3. O(1) Single-Pass VLM inference
-        vlm_results = self.vlm.verify_boxes_single_pass(frame, valid_candidates)
+        # 3. Batch VLM inference
+        vlm_results = self.vlm.verify_crops_batch(crops)
 
         # 4. Filter confirmed detections and annotate frame
         confirmed_bulbs = []

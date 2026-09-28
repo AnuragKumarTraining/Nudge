@@ -66,76 +66,56 @@ class VLMClassifier:
         print("Done.")
         print("[STATUS] VLM Engine is active and ready for inference.\n")
 
-    def verify_boxes_single_pass(self, frame_bgr, candidates):
+    def verify_crops_batch(self, crops_bgr):
         """
-        O(1) Vision Pass: Processes the full image once and extracts candidate features 
-        by pooling spatial patch tokens corresponding to their bounding boxes.
+        Processes candidate crops sequentially with competitive scoring to reject leaf glares.
+        Optimized for strict CPU memory safety to prevent RAM spikes.
         """
-        if not candidates:
+        if not crops_bgr:
             return []
 
-        total = len(candidates)
-        print(f"[VLM INFERENCE] Single-Pass ViT slicing for {total} candidate(s) on {self.device.upper()}...", end=" ", flush=True)
-
-        # 1. Preprocess the full frame
-        from PIL import Image
-        pil_image = Image.fromarray(frame_bgr[:, :, ::-1])
-        inputs = self.processor(images=pil_image, return_tensors="pt").to(self.device)
-        
-        orig_h, orig_w = frame_bgr.shape[:2]
-        
-        # Extract model grid dimensions (e.g., 336 / 14 = 24x24 grid)
-        vision_cfg = self.model.config.vision_config
-        grid_dim = vision_cfg.image_size // vision_cfg.patch_size
+        total = len(crops_bgr)
+        print(f"[VLM INFERENCE] Evaluating {total} candidate crop(s) sequentially on {self.device.upper()}...", end=" ", flush=True)
 
         results = []
-        with torch.no_grad():
-            # 2. Single forward pass for the entire image
-            vision_outputs = self.model.vision_model(**inputs)
-            hidden_states = vision_outputs.last_hidden_state[0] # Shape: (seq_len, hidden_dim)
-            
-            # 3. Reshape the spatial tokens into a 2D grid (excluding the CLS token at index 0)
-            patch_tokens = hidden_states[1:].view(grid_dim, grid_dim, -1)
-            
-            # 4. Map bounding boxes to the token grid and extract features
-            for cand in candidates:
-                x1, y1, x2, y2 = cand["bbox"]
-                
-                # Map pixel coordinates to grid coordinates
-                px1 = max(0, int((x1 / orig_w) * grid_dim))
-                py1 = max(0, int((y1 / orig_h) * grid_dim))
-                px2 = min(grid_dim, int((x2 / orig_w) * grid_dim) + 1)
-                py2 = min(grid_dim, int((y2 / orig_h) * grid_dim) + 1)
-                
-                roi_tokens = patch_tokens[py1:py2, px1:px2]
-                
-                # Average pool the tokens in the bounding box (Fallback to CLS if box is too small)
-                if roi_tokens.numel() == 0:
-                    pooled_feat = hidden_states[0]
-                else:
-                    pooled_feat = roi_tokens.mean(dim=(0, 1))
-                
-                # Project, normalize, and score
-                image_feats = self.model.visual_projection(pooled_feat.unsqueeze(0))
+        for crop in crops_bgr:
+            # Process strictly one by one for CPU memory safety
+            pil_image = Image.fromarray(crop[:, :, ::-1])
+            inputs = self.processor(
+                images=pil_image,
+                return_tensors="pt"
+            ).to(self.device)
+
+            with torch.no_grad():
+                # Process through the vision tower and apply the projection layer manually
+                vision_outputs = self.model.vision_model(**inputs)
+                image_feats = self.model.visual_projection(vision_outputs.pooler_output)
                 image_feats = image_feats / image_feats.norm(dim=-1, keepdim=True)
-                
+            
                 logit_scale = self.model.logit_scale.exp()
                 logits = (image_feats @ self.text_features.T) * logit_scale
-                p = logits.softmax(dim=-1).tolist()[0]
+                probs = logits.softmax(dim=-1).tolist()
                 
-                bulb_conf, reflection_conf, daylight_conf = p[0], p[1], p[3]
-                
-                area = (x2 - x1) * (y2 - y1)
-                required_conf = 0.40 if area < 2500 else 0.55
-                
-                is_bulb = (
-                    bulb_conf > reflection_conf 
-                    and bulb_conf > daylight_conf 
-                    and bulb_conf >= required_conf
-                )
-                
-                pred_label = "bulb" if is_bulb else "artifact"
-                results.append((is_bulb, bulb_conf, pred_label))
+                # Extract the 1D list from the single-item batch
+                p = logits.softmax(dim=-1).tolist()[0] 
+            
+            bulb_conf = p[0]
+            reflection_conf = p[1]
+            daylight_conf = p[3]
+
+            h, w = crop.shape[:2]
+            is_small = (h * w) < 2500
+            required_conf = 0.40 if is_small else 0.55
+
+            # Competitive Selection: Bulb score must explicitly beat the reflection/leaf glare score
+            is_bulb = (
+                bulb_conf > reflection_conf 
+                and bulb_conf > daylight_conf 
+                and bulb_conf >= required_conf
+            )
+            
+            pred_label = "bulb" if is_bulb else "artifact"
+            results.append((is_bulb, bulb_conf, pred_label))
 
         print("Done.")
         return results
