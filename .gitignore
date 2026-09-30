@@ -1,45 +1,68 @@
+# ==============================
 # Python cache & build artifacts
+# ==============================
 __pycache__/
 *.py[cod]
 *$py.class
 .ipynb_checkpoints/
 
-# Virtual environment (if created in root)
+# ==============================
+# Virtual environments
+# ==============================
 venv/
 .venv/
 env/
 
-# Model weights & large asset files
+# ==============================
+# Environment / secrets
+# ==============================
+.env
+.env.*
+
+# ==============================
+# Model weights & large assets
+# ==============================
 *.pt
 *.pth
 *.onnx
 *.task
 *.bin
 
-# Input media & cropped test data
+# ==============================
+# Input media & test data
+# ==============================
 input_images/
 cropped_faces/
+Raw_LightBulb_Images/
+
 *.mp4
 *.avi
 *.mov
 
-# Generated test outputs & reports
+# ==============================
+# Generated outputs & reports
+# ==============================
 output_images/
+output_results/
+master_images_output/
+input_images_output/
+All_Images_Output/
+
 gaze_report.json
 bulb_report.json
 
+# ==============================
 # IDE / OS metadata
+# ==============================
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-yolov8n.pt
-utils\__pycache__
-__pycache__
-.env
-Ultralytics/
 
-# Legacy modules
+# ==============================
+# Project-specific directories
+# ==============================
+Ultralytics/
 Face/
 Iris_Tracking/
 BulbClassifier/
@@ -47,11 +70,24 @@ Cafe_Lights/
 Cafe_Lights_Testing/
 Cafe_Lights_Testing_2/
 Cafe_Lights_Testing_3/
-Raw_LightBulb_Images/
+Cafe_Lights_Testing_test/
+Cafe_Lights_Testing_test_yolo/
 Testing/
-output_results/
-output_images/
-master_images_output/
-master_images/
-input_images_output/
 Brightness/
+All_Images/
+master_images/
+
+# ==============================
+# Python-specific project files
+# ==============================
+yolov8n.pt
+
+# ==============================
+# Legacy/test modules
+# ==============================
+Bulbs/bulb_detector_test.py
+Bulbs/bulb_detector_yolo.py
+Bulbs/state_analyzer_test.py
+Bulbs/state_analyzer_yolo.py
+Bulbs/vlm_classifier_test.py
+Bulbs/vlm_classifier_yolo.py

@@ -1,12 +1,14 @@
 import os
 import glob
 import cv2
-from Bulbs.bulb_detector_test import BulbDetector
+from Bulbs.bulb_detector_yolo import BulbDetector
 
 # Setup directories
 BASE_DIR = r"C:\Users\soham.dalui\OneDrive - JK Technosoft Ltd\Desktop\Cafe\Nudge"
-IMAGE_DIR = os.path.join(BASE_DIR, "Cafe_Lights")  # Or your input images path
-OUTPUT_DIR = os.path.join(BASE_DIR, "Cafe_Lights_Testing")
+
+IMAGE_DIR = os.path.join(BASE_DIR, "All_Images")
+
+OUTPUT_DIR = os.path.join(BASE_DIR, "All_Images_Output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Initialize Bulb Engine

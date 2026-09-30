@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def get_luminosity(image):
     """Safely converts 1-channel, 3-channel (BGR), or 4-channel (BGRA) images to grayscale."""
     if image is None:
@@ -22,6 +23,15 @@ def get_luminosity(image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     raise ValueError(f"Unexpected image shape: {image.shape}")
+
+
+def scene_brightness(gray):
+    """
+    Continuous scene-brightness factor.
+    0.0 = night scene, 1.0 = bright indoor / daylight scene.
+    Uses the median (not the mean) so flares and big lit walls don't fool it.
+    """
+    return float(np.clip((float(np.median(gray)) - 50) / 70.0, 0.0, 1.0))
 
 
 def reduce_haziness(gray_image, gamma=2.2):
@@ -81,28 +91,78 @@ def is_linear_light_source(contour, min_aspect_ratio=2.5, max_aspect_ratio=25.0,
     return solidity >= min_solidity
 
 
-def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=15):
+def blob_light_stats(image, gray, contour, white_thr=235):
+    """
+    Returns (core_frac, contrast)
+      core_frac : fraction of blob pixels that are near-white in ALL channels
+                  (bulb cores clip to white; green leaf glare doesn't).
+                  white_thr is lowered for bright scenes, where warm-white LEDs
+                  rarely reach 235 in the blue channel.
+      contrast  : mean brightness inside blob minus mean of surrounding ring
+    """
+    H, W = gray.shape[:2]
+    x, y, bw, bh = cv2.boundingRect(contour)
+
+    # Ring width scales with the blob's SHORT side and is capped, so long
+    # linear strips don't measure contrast against half the room.
+    r = min(max(6, int(0.75 * min(bw, bh)) + 6), 30)
+
+    x1, y1 = max(0, x - r - 2), max(0, y - r - 2)
+    x2, y2 = min(W, x + bw + r + 2), min(H, y + bh + r + 2)
+
+    mask = np.zeros((y2 - y1, x2 - x1), np.uint8)
+    cv2.drawContours(mask, [contour], -1, 255, -1, offset=(-x1, -y1))
+
+    inner = cv2.dilate(mask, np.ones((3, 3), np.uint8))
+    outer = cv2.dilate(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * r + 1, 2 * r + 1)))
+    inside = mask > 0
+    ring = (outer > 0) & (inner == 0)
+
+    roi_gray = gray[y1:y2, x1:x2]
+    if image.ndim == 3:
+        whiteness = image[y1:y2, x1:x2, :3].min(axis=2)   # min(B,G,R)
+    else:
+        whiteness = roi_gray
+
+    core_frac = float((whiteness[inside] >= white_thr).mean()) if inside.any() else 0.0
+    contrast = float(roi_gray[inside].mean() - roi_gray[ring].mean()) if ring.any() else 0.0
+    return core_frac, contrast
+
+
+def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixels=15, debug=False):
     """
     Finds potential active light sources, applying NMS to prevent duplicates
     and separating the VLM crop box from the tight visual drawing box.
+
+    All thresholds adapt continuously to scene brightness `t`
+    (0 = night, 1 = bright indoor/day). At t = 0 the behaviour is identical
+    to the original night-tuned pipeline.
     """
     h, w = image.shape[:2]
     gray = get_luminosity(image)
     smooth = reduce_haziness(gray, gamma=2.0)
 
+    # Scene-adaptive parameters
+    t = scene_brightness(gray)
+    white_thr = int(round(235 - 30 * t))     # 235 night -> 205 day
+    min_contrast = 50 - 20 * t               # 50 night  -> 30 day
+
     # 1. Lower the min_area multiplier slightly to catch distant garden pathway lights
     if min_area is None:
         min_area = max(4, int(h * w * 0.000004))
 
-    # 2. Cap the adaptive threshold to prevent bright foreground lamps from blinding background lights
+    # 2. Adaptive threshold. Night: floor 175 / cap 215 (unchanged).
+    #    Day: floor 200 / cap 230 so ceiling glow isn't picked up,
+    #    while brighter LEDs still survive.
     if threshold_value is None:
         peak_luminance = float(np.percentile(smooth, 99.7))
-        # Cap upper ceiling at 215 so dimmer distant path lights survive
-        threshold_value = min(215, max(175, int(peak_luminance * 0.85)))
+        lo = 175 + int(25 * t)
+        hi = 215 + int(15 * t)
+        threshold_value = min(hi, max(lo, int(peak_luminance * 0.85)))
 
     thresh = isolate_active_bulbs(smooth, threshold_value=threshold_value)
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
+
     raw_candidates = []
     safe_pad = 15 if pad_pixels is None else int(pad_pixels)
 
@@ -114,15 +174,22 @@ def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixel
         if not (is_round_or_oval(c) or is_linear_light_source(c)):
             continue
 
+        core_frac, contrast = blob_light_stats(image, gray, c, white_thr)
+        if debug:
+            print(f"t={t:.2f} thr={threshold_value} area={area:.0f} "
+                  f"core={core_frac:.2f} contrast={contrast:.0f}")
+        if core_frac < 0.10 or contrast < min_contrast:
+            continue
+
         bx, by, bw, bh = cv2.boundingRect(c)
-        
+
         # --- Tight Box for Drawing (Very small padding) ---
         draw_pad = 4
         dx1 = max(0, bx - draw_pad)
         dy1 = max(0, by - draw_pad)
         dx2 = min(w, bx + bw + draw_pad)
         dy2 = min(h, by + bh + draw_pad)
-        
+
         # --- Padded Box for VLM Classification (Context) ---
         actual_pad = safe_pad + 10 if max(bw, bh) < 25 else safe_pad
         x1 = max(0, bx - actual_pad)
@@ -133,7 +200,9 @@ def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixel
         raw_candidates.append({
             "bbox": [x1, y1, x2, y2],
             "draw_bbox": [dx1, dy1, dx2, dy2],
-            "area": float(area)
+            "area": float(area),
+            "core_frac": core_frac,
+            "contrast": contrast,
         })
 
     if not raw_candidates:
@@ -141,8 +210,8 @@ def detect_bulb_candidates(image, threshold_value=None, min_area=None, pad_pixel
 
     # 3. Non-Maximum Suppression (NMS)
     boxes_xywh = [
-        [c["draw_bbox"][0], c["draw_bbox"][1], 
-         c["draw_bbox"][2] - c["draw_bbox"][0], 
+        [c["draw_bbox"][0], c["draw_bbox"][1],
+         c["draw_bbox"][2] - c["draw_bbox"][0],
          c["draw_bbox"][3] - c["draw_bbox"][1]]
         for c in raw_candidates
     ]
