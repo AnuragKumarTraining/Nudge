@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from Bulbs.state_analyzer_yolo import detect_bulb_candidates, get_luminosity, scene_brightness
-from Bulbs.vlm_classifier_yolo import VLMClassifier
+from Bulbs.state_analyzer import detect_bulb_candidates, get_luminosity, scene_brightness
+from Bulbs.vlm_classifier import VLMClassifier
 
 
 class BulbDetector:
